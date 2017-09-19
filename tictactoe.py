@@ -51,8 +51,6 @@ def performMove(gameState, playerMarker, move, movesLeft):
         movesLeft[1].pop() #remove first element, such as to remove one marker from the moves left
     gameState[move] = playerMarker
 
-#todo do something with movesLeft
-
 def getPlayerMove(gameState):
     # Let the player type in their move. If the move is illegal or invalid, prompt the player for a new move.
 
