@@ -56,7 +56,7 @@ def getPlayerMove(gameState):
 
     moves = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
     while True:
-        print('Select the next move using (1-9): ')
+        print('Select the next move using 1-9 (where 1 is the top left square, 2 is top mid, 3 top right, 4 mid left, 5 center, 6 mid right, 7 bottom left, 8 bottom mid, 9 bottom right): ')
         move = raw_input()
         if (move in moves) and (isPositionFree(gameState, int(move))):
             return int(move)
