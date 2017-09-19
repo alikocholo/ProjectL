@@ -5,12 +5,7 @@
 
 
 # TODO:
-# 1. When a player tries to place a marker on an existing position the game should force the player to
-#    chose a new position. Currently it just removes the old one and replaces it with the new marker.
-#
-# 2. The game should display the ammount of markers left for each player. This should be done by updating
-#    the print-function.
-#
+
 # 3. The game should propmt the player to choose between vs AI or another player. Currently the default is vs another
 #    player. This should probably be done at the start by asking the player for input and then branch the execution.
 #    No AI is to be implemented so perhaps just some tbi-stuff there.
@@ -48,22 +43,31 @@ def isGameStateFull(gameState):
             return False
     return True
         
-def performMove(gameState, playerMarker, move):
+def performMove(gameState, playerMarker, move, movesLeft):
     # Markes the move in the game state using players letter
+    if (playerMarker == 'X'):
+        movesLeft[0].pop() #pop first element, such as removing one marker from the moves left
+    else:
+        movesLeft[1].pop() #remove first element, such as to remove one marker from the moves left
     gameState[move] = playerMarker
 
+#todo do something with movesLeft
+
 def getPlayerMove(gameState):
-    # Let the player type in their move
-    move = ' '
-    while move not in '1 2 3 4 5 6 7 8 9'.split() or not isPositionFree(gameState, int(move)):
+    # Let the player type in their move. If the move is illegal or invalid, prompt the player for a new move.
+
+    moves = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    while True:
         print('Select the next move using (1-9): ')
-        move = input()
-        print("Returning move: " + str(move))
-        return(move)
+        move = raw_input()
+        if (move in moves) and (isPositionFree(gameState, int(move))):
+            return int(move)
+        else:
+            print('Illegal or invalid move. Try again!')
 
 def isPositionFree(gameState, move):
     # Check if the move 'move' is valied within the gamestate 'gameState'
-    return gameState[move] == ' '
+    return(gameState[move] == ' ')
 
 def isGameWon(gS, pM):
     # Check if the gamestate (gS) contains three of the given marker (pM) in a row.
@@ -76,15 +80,17 @@ def isGameWon(gS, pM):
             (gS[3] == pM and gS[5] == pM and gS[7] == pM) or #diagonal 1
             (gS[1] == pM and gS[5] == pM and gS[9] == pM))   #diagonal 2
 
-def printGameState(gameState):
+def printGameState(gameState, movesLeft):
     # Prints the game state in the terminal.
     # gameState is a list representing the game state by 9 slots, one for
     # each position on the board. as illustrated here:
     # [1 2 3]
     # [4 5 6]
     # [7 8 9]
+    print('  :: Player 1 stones left: ' + str(movesLeft[0]))
+    print('  :: Player 2 stones left: ' + str(movesLeft[1]))
     print('   |   |')
-    print(' ' + gameState[7] + ' | ' + gameState[8] + ' | ' + gameState[9])
+    print(' ' + gameState[1] + ' | ' + gameState[2] + ' | ' + gameState[3])
     print('   |   |')
     print('-----------')
     print('   |   |')
@@ -92,27 +98,32 @@ def printGameState(gameState):
     print('   |   |')
     print('-----------')
     print('   |   |')
-    print(' ' + gameState[1] + ' | ' + gameState[2] + ' | ' + gameState[3])
+    print(' ' + gameState[7] + ' | ' + gameState[8] + ' | ' + gameState[9])
     print('   |   |')
     return
 
 print("Lets play!")
 while True:
     # set up a clear board, player stones indicators, let playerOne start and initiate the game
-    gameState = [' '] * 10
+    gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
+                           # indices represents the position of the board (index 1 = top let, index 2 = top mid etc.
+
     playerOneMarker = 'X'
     playerTwoMarker = 'O'
+
+    movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
+
     turn = 'playerOne'
     gameIsPlaying = True
-    
+
+    printGameState(gameState, movesLeft)
     while gameIsPlaying:
         if turn == 'playerOne':
             # Player ones turn. First print the gameState, then get a valid move from the player
             # finally change the gameState according to the player move, check and handle result.
-            printGameState(gameState)
             move = getPlayerMove(gameState)
-            performMove(gameState, playerOneMarker, move)
-            printGameState(gameState)
+            performMove(gameState, playerOneMarker, move, movesLeft)
+            printGameState(gameState, movesLeft)
             if isGameWon(gameState, playerOneMarker):
                 print("Player one won!")
                 gameIsPlaying == False
@@ -126,16 +137,16 @@ while True:
         else:
             # Player twos turn. Do the same thing as player one.
             move = getPlayerMove(gameState)
-            performMove(gameState, playerTwoMarker, move)
-            
+            performMove(gameState, playerTwoMarker, move, movesLeft)
+            printGameState(gameState, movesLeft)
             if isGameWon(gameState, playerTwoMarker):
-                printGameState(gameState)
+                printGameState(gameState, movesLeft)
                 print("Player two won!")
                 gameIsPlaying == False
                 break
             else:
                 if isGameStateFull(gameState):
-                    printGameState(gameState)
+                    printGameState(gameState, movesLeft)
                     print("Its a draw!")
                     break
                 else:
