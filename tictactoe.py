@@ -3,21 +3,19 @@
 # Group L
 # Author: Henrik Thorsell
 
-
 # TODO:
-
 #
-# 1. Implement som way for the player to get help as Kiko suggested on todays meeting (19/9/2017). Perhaps always
-#    check the input and if it ever is 'h', print some cleverly formatted help text.
-#
-# 2. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
+# 1. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
 #    player. Also the input should only take one character, as you currently have to confirm your selection by
 #    hitting enter. This functionality has to be removed if the players are going to be able to play smoothy.
 #
-# 3. Implement the time out for when the player takes to long to make a choice during their turn.
+# 2. Implement the time out for when the player takes to long to make a choice during their turn.
 #
-# 4. If a player presses the button too quickly in succession the first press is registered, the second should prompt
+# 3. If a player presses the button too quickly in succession the first press is registered, the second should prompt
 #    a text stating that the player is going to fast (or something similar?)
+#
+# 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
+#    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
 def playAgain():
     # prompts the player if they want to play again. returning true of false. if something other than y or n is provided as input
