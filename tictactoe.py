@@ -18,9 +18,6 @@
 #
 # 4. If a player presses the button too quickly in succession the first press is registered, the second should prompt
 #    a text stating that the player is going to fast (or something similar?)
-#
-# 5. The print-function should be changed according to our prototype we showed Kiko, displaying the commands the
-#    player can use.
 
 def playAgain():
     # prompts the player if they want to play again. returning true of false. if something other than y or n is provided as input
@@ -88,27 +85,29 @@ def printGameState(gameState, movesLeft):
     # [1 2 3]
     # [4 5 6]
     # [7 8 9]
-
+    padding = "                                          " # set amount of space to pad the printed output
     if turn == 'playerOne':
         playerTurn = playerNames[0]
     else: playerTurn = playerNames[1]
 
-    print('  :: Player 1: ' + str(playerNames[0]) + ' stones left: ' + str(movesLeft[0]))
-    print('  :: Player 2: ' + str(playerNames[1]) + ' stones left: ' + str(movesLeft[1]))
+    print('  :: Player 1: ' + str(playerNames[0]))
+    print('  :: Stones left: ' + str(movesLeft[0]))
+    print('                                                             :: Player 2: ' + str(playerNames[1]))
+    print('                                                             :: Stones left: ' + str(movesLeft[1]))
     print('')
-    print('Player ' + playerTurn + 's turn') #print players turn
+    print('                                         Player ' + playerTurn + 's turn') #print players turn
     print('')
-    print('   |   |')
-    print(' ' + gameState[1] + ' | ' + gameState[2] + ' | ' + gameState[3])
-    print('   |   |')
-    print('-----------')
-    print('   |   |')
-    print(' ' + gameState[4] + ' | ' + gameState[5] + ' | ' + gameState[6])
-    print('   |   |')
-    print('-----------')
-    print('   |   |')
-    print(' ' + gameState[7] + ' | ' + gameState[8] + ' | ' + gameState[9])
-    print('   |   |')
+    print(padding+'     |   |')
+    print(padding+'   ' + gameState[1] + ' | ' + gameState[2] + ' | ' + gameState[3])
+    print(padding+'     |   |')
+    print(padding+'---------------')
+    print(padding+'     |   |')
+    print(padding+'   ' + gameState[4] + ' | ' + gameState[5] + ' | ' + gameState[6])
+    print(padding+'     |   |')
+    print(padding+'---------------')
+    print(padding+'     |   |')
+    print(padding+'   ' + gameState[7] + ' | ' + gameState[8] + ' | ' + gameState[9])
+    print(padding+'     |   |')
     return
 
 def getPlayerNames(gameMode, playerNames):
