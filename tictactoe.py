@@ -6,13 +6,6 @@
 
 # TODO:
 
-# 3. The game should propmt the player to choose between vs AI or another player. Currently the default is vs another
-#    player. This should probably be done at the start by asking the player for input and then branch the execution.
-#    No AI is to be implemented so perhaps just some tbi-stuff there.
-#
-# 4. The game should ask the player or players for their names and display then together with the game state. This
-#    should be by asking the player at the start, store the names in a list and refactor the print-function to take
-#    the list as an additional argument, use it to print.
 #
 # 5. Implement som way for the player to get help as Kiko suggested on todays meeting (19/9/2017). Perhaps always
 #    check the input and if it ever is 'h', print some cleverly formatted help text.
@@ -30,10 +23,25 @@
 #    player can use.
 
 def playAgain():
+
+    while True:
+        print('Do you want to play another game? (y/n)')
+        option = raw_input().lower()
+        if option == 'y':
+            option = True
+            break
+        elif option == 'n':
+            option = False
+            break
+        else:
+            print('Please answer yes (y), or no (n).')
+    return option
+
     # Asks the player if they want to play another game. Returns True or False.
-    print("Do you want to play another game? (Y/N)")
-    temp = raw_input().lower() #<- raw_input() used for python 2.x (I think), should be replaced with input() for 3.x
-    return (temp == 'y') #This should be "return (raw_input().lower() == 'y') or something similar"
+    #print("Do you want to play another game? (Y/N)")
+    #temp = raw_input().lower() #<- raw_input() used for python 2.x (I think), should be replaced with input() for 3.x
+    #return (temp == 'y') #This should be "return (raw_input().lower() == 'y') or something similar"
+
 
 def isGameStateFull(gameState):
     # Check if the game state is filled and thus no more moves are possible.
@@ -85,8 +93,16 @@ def printGameState(gameState, movesLeft):
     # [1 2 3]
     # [4 5 6]
     # [7 8 9]
-    print('  :: Player 1 stones left: ' + str(movesLeft[0]))
-    print('  :: Player 2 stones left: ' + str(movesLeft[1]))
+
+    if turn == 'playerOne':
+        playerTurn = playerNames[0]
+    else: playerTurn = playerNames[1]
+
+    print('  :: Player 1: ' + str(playerNames[0]) + ' stones left: ' + str(movesLeft[0]))
+    print('  :: Player 2: ' + str(playerNames[1]) + ' stones left: ' + str(movesLeft[1]))
+    print('')
+    print('Player ' + playerTurn + 's turn') #print players turn
+    print('')
     print('   |   |')
     print(' ' + gameState[1] + ' | ' + gameState[2] + ' | ' + gameState[3])
     print('   |   |')
@@ -100,32 +116,68 @@ def printGameState(gameState, movesLeft):
     print('   |   |')
     return
 
+def getPlayerNames(gameMode, playerNames):
+    # if game mode is set to 0, get the names of player one and two, if the mode is set to 1
+    # get the name of the only player. if there gameMode is something else (this should not
+    # happen) implement some error handling.
+    # The function should be called with playerNames as an empty list
+    if gameMode == '0':
+        print('Enter the name of player one:')
+        playerNames.insert(0, raw_input())
+        print('Enter the name of player two:')
+        playerNames.insert(1, raw_input())
+    elif gameMode == '1':
+        print('Enter the name of player one:')
+        playerNames.insert(0, raw_input())
+    else:
+        return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
+
+def getGameMode():
+    # Prompts the user to choose game mode. 0 is PvP and 1 is PvAI. 
+    gameModes = ['0','1']
+    print('Please choose player vs player or player vs AI: ')
+    print('Input 0 for PvP and 1 for PvAI(not yet implemented)')
+    gameMode = raw_input()
+    while True:
+        if (gameMode in gameModes):
+            return gameMode
+        else:
+            print('Please select a valid game mode!')
+            print('Enter 0 for PVP or 1 for PvAI(not yet implemented)')
+            gameMode = raw_input()
+
 print("Lets play!")
 while True:
     # set up a clear board, player stones indicators, let playerOne start and initiate the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
                            # indices represents the position of the board (index 1 = top let, index 2 = top mid etc.
-
     playerOneMarker = 'X'
     playerTwoMarker = 'O'
-
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
-
     turn = 'playerOne'
+
+    playerNames = []
+    gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
+
+    if (gameMode == '1'): # prompt the user for new game if AI is selected, as AI not yet implemented
+        print('AI not yet implemented!')
+        break
+
+    getPlayerNames(gameMode, playerNames)
+
     gameIsPlaying = True
 
-    printGameState(gameState, movesLeft)
     while gameIsPlaying:
         if turn == 'playerOne':
             # Player ones turn. First print the gameState, then get a valid move from the player
             # finally change the gameState according to the player move, check and handle result.
+            printGameState(gameState, movesLeft)
             move = getPlayerMove(gameState)
             performMove(gameState, playerOneMarker, move, movesLeft)
             printGameState(gameState, movesLeft)
             if isGameWon(gameState, playerOneMarker):
-                print("Player one won!")
-                gameIsPlaying == False
-                break
+                print('Player one (' + str(playerNames[0]) + ') won!')
+                gameIsPlaying = False
             else:
                 if isGameStateFull(gameState):
                     print("Its a draw!")
@@ -134,17 +186,15 @@ while True:
                     turn = 'playerTwo'
         else:
             # Player twos turn. Do the same thing as player one.
+            printGameState(gameState, movesLeft)
             move = getPlayerMove(gameState)
             performMove(gameState, playerTwoMarker, move, movesLeft)
             printGameState(gameState, movesLeft)
             if isGameWon(gameState, playerTwoMarker):
-                printGameState(gameState, movesLeft)
                 print("Player two won!")
-                gameIsPlaying == False
-                break
+                gameIsPlaying = False
             else:
                 if isGameStateFull(gameState):
-                    printGameState(gameState, movesLeft)
                     print("Its a draw!")
                     break
                 else:
