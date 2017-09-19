@@ -7,23 +7,24 @@
 # TODO:
 
 #
-# 5. Implement som way for the player to get help as Kiko suggested on todays meeting (19/9/2017). Perhaps always
+# 1. Implement som way for the player to get help as Kiko suggested on todays meeting (19/9/2017). Perhaps always
 #    check the input and if it ever is 'h', print some cleverly formatted help text.
 #
-# 6. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
+# 2. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
 #    player. Also the input should only take one character, as you currently have to confirm your selection by
 #    hitting enter. This functionality has to be removed if the players are going to be able to play smoothy.
 #
-# 7. Implement the time out for when the player takes to long to make a choice during their turn.
+# 3. Implement the time out for when the player takes to long to make a choice during their turn.
 #
-# 8. If a player presses the button too quickly in succession the first press is registered, the second should prompt
+# 4. If a player presses the button too quickly in succession the first press is registered, the second should prompt
 #    a text stating that the player is going to fast (or something similar?)
 #
-# 9. The print-function should be changed according to our prototype we showed Kiko, displaying the commands the
+# 5. The print-function should be changed according to our prototype we showed Kiko, displaying the commands the
 #    player can use.
 
 def playAgain():
-
+    # prompts the player if they want to play again. returning true of false. if something other than y or n is provided as input
+    # the function keeps calling input() asking for new input until it matches either case.
     while True:
         print('Do you want to play another game? (y/n)')
         option = raw_input().lower()
@@ -36,12 +37,6 @@ def playAgain():
         else:
             print('Please answer yes (y), or no (n).')
     return option
-
-    # Asks the player if they want to play another game. Returns True or False.
-    #print("Do you want to play another game? (Y/N)")
-    #temp = raw_input().lower() #<- raw_input() used for python 2.x (I think), should be replaced with input() for 3.x
-    #return (temp == 'y') #This should be "return (raw_input().lower() == 'y') or something similar"
-
 
 def isGameStateFull(gameState):
     # Check if the game state is filled and thus no more moves are possible.
