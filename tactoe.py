@@ -1,3 +1,4 @@
+
 # Uppsala univerity
 # Software Engineering and Project Management autumn 2017
 # Group L
@@ -8,6 +9,7 @@
 # 1. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
 #    player. Also the input should only take one character, as you currently have to confirm your selection by
 #    hitting enter. This functionality has to be removed if the players are going to be able to play smoothy.
+#  - Letters implemented but enter is still required. (we need https://pypi.python.org/pypi/getch) to be able to get that functionallity.
 #
 # 2. Implement the time out for when the player takes to long to make a choice during their turn.
 #
@@ -18,55 +20,71 @@
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
 def playAgain():
-    # prompts the player if they want to play again. returning true of false. if something other than y or n is provided as input
-    # the function keeps calling input() asking for new input until it matches either case.
+    """
+    prompts the player if they want to play again. 
+    returning true of false. 
+    if something other than y or n is provided as input
+    the function keeps calling input() asking for new input until it matches either case.
+    """
     while True:
         print('Do you want to play another game? (y/n)')
-        option = raw_input().lower()
+        option = input().lower()
         if option == 'y':
-            option = True
-            break
+            return True
         elif option == 'n':
-            option = False
-            break
+            return False
         else:
             print('Please answer yes (y), or no (n).')
-    return option
 
 def isGameStateFull(gameState):
-    # Check if the game state is filled and thus no more moves are possible.
-    # If an empty space is found, returns false immediately, if the state is checked and none is found return true
+    """
+    Check if the game state is filled and thus no more moves are possible.
+    If an empty space is found, returns false immediately, if the state is checked and none is found return true
+    """
     for i in range(1, 10):
         if isPositionFree(gameState, i):
             return False
     return True
         
 def performMove(gameState, playerMarker, move, movesLeft):
-    # Markes the move in the game state using players letter
+    """
+    Markes the move in the game state using players letter
+    """
     if (playerMarker == 'X'):
         movesLeft[0].pop() #pop first element, such as removing one marker from the moves left
     else:
         movesLeft[1].pop() #remove first element, such as to remove one marker from the moves left
     gameState[move] = playerMarker
+    
+def getPlayerMove(gameState, turn):
+    """
+    Let the player type in their move.
+    If the move is illegal or invalid, 
+    prompt the player for a new move.
+    """
 
-def getPlayerMove(gameState):
-    # Let the player type in their move. If the move is illegal or invalid, prompt the player for a new move.
-
-    moves = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    if turn == 'playerOne':
+        moves = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
+    else:
+        moves = ['y', 'u', 'i', 'h', 'j', 'k', 'b', 'n', 'm']
     while True:
-        print('Select the next move using 1-9 (where 1 is the top left square, 2 is top mid, 3 top right, 4 mid left, 5 center, 6 mid right, 7 bottom left, 8 bottom mid, 9 bottom right): ')
-        move = raw_input()
-        if (move in moves) and (isPositionFree(gameState, int(move))):
-            return int(move)
+        print('Select the next move using', moves)
+        move = input()
+        if (move in moves) and (isPositionFree(gameState, int(moves.index(move) + 1))):
+            return int(moves.index(move) + 1)
         else:
             print('Illegal or invalid move. Try again!')
 
 def isPositionFree(gameState, move):
-    # Check if the move 'move' is valied within the gamestate 'gameState'
-    return(gameState[move] == ' ')
+    """
+    Check if the move 'move' is valied within the gamestate 'gameState'
+    """
+    return gameState[move] == ' '
 
 def isGameWon(gS, pM):
-    # Check if the gamestate (gS) contains three of the given marker (pM) in a row.
+    """
+    Check if the gamestate (gS) contains three of the given marker (pM) in a row.
+    """
     return ((gS[1] == pM and gS[2] == pM and gS[3] == pM) or #top
             (gS[4] == pM and gS[5] == pM and gS[6] == pM) or #middle
             (gS[7] == pM and gS[8] == pM and gS[9] == pM) or #bottom
@@ -76,13 +94,15 @@ def isGameWon(gS, pM):
             (gS[3] == pM and gS[5] == pM and gS[7] == pM) or #diagonal 1
             (gS[1] == pM and gS[5] == pM and gS[9] == pM))   #diagonal 2
 
-def printGameState(gameState, movesLeft):
-    # Prints the game state in the terminal.
-    # gameState is a list representing the game state by 9 slots, one for
-    # each position on the board. as illustrated here:
-    # [1 2 3]
-    # [4 5 6]
-    # [7 8 9]
+def printGameState(gameState, movesLeft, turn, playerNames):
+    """
+    Prints the game state in the terminal.
+    gameState is a list representing the game state by 9 slots, one for
+    each position on the board. as illustrated here:
+    [1 2 3]
+    [4 5 6]
+    [7 8 9]
+    """
     padding = "                                          " # set amount of space to pad the printed output
     if turn == 'playerOne':
         playerTurn = playerNames[0]
@@ -108,38 +128,43 @@ def printGameState(gameState, movesLeft):
     print(padding+'     |   |')
     return
 
-def getPlayerNames(gameMode, playerNames):
-    # if game mode is set to 0, get the names of player one and two, if the mode is set to 1
-    # get the name of the only player. if there gameMode is something else (this should not
-    # happen) implement some error handling.
-    # The function should be called with playerNames as an empty list
+def getPlayerNames(gameMode):
+    """
+    if game mode is set to 0, get the names of player one and two, if the mode is set to 1
+    get the name of the only player. if there gameMode is something else (this should not
+    happen) implement some error handling.
+    The function should be called with playerNames as an empty list
+    """
+    playerNames = []
     if gameMode == '0':
         print('Enter the name of player one:')
-        playerNames.insert(0, raw_input())
+        playerNames.insert(0, input())
         print('Enter the name of player two:')
-        playerNames.insert(1, raw_input())
+        playerNames.insert(1, input())
     elif gameMode == '1':
         print('Enter the name of player one:')
-        playerNames.insert(0, raw_input())
+        playerNames.insert(0, input())
     else:
         return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
+    return playerNames
 
 def getGameMode():
-    # Prompts the user to choose game mode. 0 is PvP and 1 is PvAI. 
+    """
+    Prompts the user to choose game mode. 0 is PvP and 1 is PvAI. 
+    """
     gameModes = ['0','1']
     print('Please choose player vs player or player vs AI: ')
     print('Input 0 for PvP and 1 for PvAI(not yet implemented)')
-    gameMode = raw_input()
+    gameMode = input()
     while True:
         if (gameMode in gameModes):
             return gameMode
         else:
             print('Please select a valid game mode!')
             print('Enter 0 for PVP or 1 for PvAI(not yet implemented)')
-            gameMode = raw_input()
+            gameMode = input()
 
-print("Lets play!")
-while True:
+def loop():
     # set up a clear board, player stones indicators, let playerOne start and initiate the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
                            # indices represents the position of the board (index 1 = top let, index 2 = top mid etc.
@@ -147,15 +172,13 @@ while True:
     playerTwoMarker = 'O'
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
-
-    playerNames = []
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
 
     if (gameMode == '1'): # prompt the user for new game if AI is selected, as AI not yet implemented
         print('AI not yet implemented!')
-        break
+        return
 
-    getPlayerNames(gameMode, playerNames)
+    playerNames = getPlayerNames(gameMode)
 
     gameIsPlaying = True
 
@@ -163,10 +186,10 @@ while True:
         if turn == 'playerOne':
             # Player ones turn. First print the gameState, then get a valid move from the player
             # finally change the gameState according to the player move, check and handle result.
-            printGameState(gameState, movesLeft)
-            move = getPlayerMove(gameState)
+            printGameState(gameState, movesLeft, turn, playerNames)
+            move = getPlayerMove(gameState, turn)
             performMove(gameState, playerOneMarker, move, movesLeft)
-            printGameState(gameState, movesLeft)
+            printGameState(gameState, movesLeft, turn, playerNames)
             if isGameWon(gameState, playerOneMarker):
                 print('Player one (' + str(playerNames[0]) + ') won!')
                 gameIsPlaying = False
@@ -178,10 +201,10 @@ while True:
                     turn = 'playerTwo'
         else:
             # Player twos turn. Do the same thing as player one.
-            printGameState(gameState, movesLeft)
-            move = getPlayerMove(gameState)
+            printGameState(gameState, movesLeft, turn, playerNames)
+            move = getPlayerMove(gameState, turn)
             performMove(gameState, playerTwoMarker, move, movesLeft)
-            printGameState(gameState, movesLeft)
+            printGameState(gameState, movesLeft, turn, playerNames)
             if isGameWon(gameState, playerTwoMarker):
                 print("Player two won!")
                 gameIsPlaying = False
@@ -193,4 +216,6 @@ while True:
                     turn = 'playerOne'
                     
     if not playAgain():
-        break
+        return
+    
+    loop()
