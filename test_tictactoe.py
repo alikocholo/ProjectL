@@ -1,5 +1,5 @@
 import unittest
-import tictactoe
+import tactoe
 
 #TODO:
 # 1. Mainloop in tictactoe.py needs to be moved to another file
@@ -25,8 +25,8 @@ class testGameWon(unittest.TestCase):
     
     def testEmptyGame(self):
         gameStateEmpty = [' ']*10
-        self.assertEqual(tictactoe.isGameWon(gameStateEmpty, 'X'), False)
-        self.assertEqual(tictactoe.isGameWon(gameStateEmpty, 'Y'), False)
+        self.assertEqual(tactoe.isGameWon(gameStateEmpty, 'X'), False)
+        self.assertEqual(tactoe.isGameWon(gameStateEmpty, 'Y'), False)
 
     #Diagonally possible wins
     #[X,2,3] [1,2,X]
@@ -34,11 +34,11 @@ class testGameWon(unittest.TestCase):
     #[7,8,X] [X,8,9]
     def testDiagonally(self):
         gameStateXwinD = [' ','X',' ',' ',' ','X',' ',' ',' ','X']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinD, 'X'), True)
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinD, 'Y'), False)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'Y'), False)
         gameStateXwinD = [' ',' ',' ','X',' ','X',' ','X',' ',' ']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinD, 'X'), True)
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinD, 'Y'), False)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'Y'), False)
 
     #Horizontal possible wins
     #[X,X,X] [1,2,3] [1,2,3] 
@@ -46,11 +46,11 @@ class testGameWon(unittest.TestCase):
     #[7,8,9] [7,8,9] [X,X,X] 
     def testHorizontal(self):
         gameStateXwinH = [' ','X','X','X',' ',' ',' ',' ',' ',' ']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinH, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinH, 'X'), True)
         gameStateXwinH = [' ', ' ',' ',' ','X','X','X',' ',' ',' ']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinH, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinH, 'X'), True)
         gameStateXwinH = ['', ' ',' ',' ',' ',' ',' ','X','X','X']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinH, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinH, 'X'), True)
 
     #Vertically possible wins
     #[X,2,3] [1,X,3] [1,2,X]
@@ -58,11 +58,11 @@ class testGameWon(unittest.TestCase):
     #[X,8,9] [7,X,9] [7,8,X]
     def testVertically(self):
         gameStateXwinV = [' ','X',' ',' ','X',' ',' ','X',' ',' ']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinV, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinV, 'X'), True)
         gameStateXwinV = [' ',' ','X',' ',' ','X',' ',' ','X',' ']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinV, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinV, 'X'), True)
         gameStateXwinV = [' ',' ',' ','X',' ',' ','X',' ',' ','X']
-        self.assertEqual(tictactoe.isGameWon(gameStateXwinV, 'X'), True)
+        self.assertEqual(tactoe.isGameWon(gameStateXwinV, 'X'), True)
     
     #Nobody wins
     #[X,Y,X]
@@ -70,8 +70,8 @@ class testGameWon(unittest.TestCase):
     #[Y,X,Y]
     def testDraw(self):
         gameStateDrawn = [' ', 'X', 'Y', 'X', 'Y', 'X', 'X', 'Y', 'X', 'Y']
-        self.assertEqual(tictactoe.isGameWon(gameStateDrawn, 'Y'), False)
-        self.assertEqual(tictactoe.isGameWon(gameStateDrawn, 'X'), False)
+        self.assertEqual(tactoe.isGameWon(gameStateDrawn, 'Y'), False)
+        self.assertEqual(tactoe.isGameWon(gameStateDrawn, 'X'), False)
 
 if __name__ == '__main__':
     unittest.main()
