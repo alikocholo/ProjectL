@@ -2,7 +2,7 @@ import getch
 # Uppsala univerity
 # Software Engineering and Project Management autumn 2017
 # Group L
-# Author: Henrik Thorsell
+# Author: Casper Strömberg, Henrik Thorsell
 
 # TODO:
 #
