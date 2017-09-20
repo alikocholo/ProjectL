@@ -14,6 +14,8 @@ import getch
 # 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
+from gameengine import getAIMove
+
 def playAgain():
     """
     prompts the player if they want to play again. 
@@ -144,6 +146,7 @@ def getPlayerNames(gameMode):
     elif gameMode == '1':
         print('Enter the name of player one:')
         playerNames.insert(0, input())
+        playerNames.insert(1, "The Robot Overlord (AI)")
     else:
         return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
     return playerNames
@@ -167,16 +170,16 @@ def getGameMode():
 def loop():
     # set up a clear board, player stones indicators, let playerOne start and initiate the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
-                           # indices represents the position of the board (index 1 = top let, index 2 = top mid etc.
+    # indices represents the position of the board (index 1 = top let, index 2 = top mid etc.
     playerOneMarker = 'X'
     playerTwoMarker = 'O'
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
 
-    if (gameMode == '1'): # prompt the user for new game if AI is selected, as AI not yet implemented
-        print('AI not yet implemented!')
-        return
+    #if (gameMode == '1'): # prompt the user for new game if AI is selected, as AI not yet implemented
+    #    print('AI not yet implemented!')
+    #    return
 
     playerNames = getPlayerNames(gameMode)
 
@@ -200,9 +203,12 @@ def loop():
                 else:
                     turn = 'playerTwo'
         else:
-            # Player twos turn. Do the same thing as player one.
+                    # Player twos turn. Do the same thing as player one. If Game mode is set to PvsAI (1), instead call the function for AI to make a move.
             printGameState(gameState, movesLeft, turn, playerNames)
-            move = getPlayerMove(gameState, turn)
+            if (gameMode == '1'):
+                move = getAIMove(gameState, playerTwoMarker) # Change this function call to whatever game-engine we decide to integrate with.
+            else:
+                move = getPlayerMove(gameState, turn)
             performMove(gameState, playerTwoMarker, move, movesLeft)
             printGameState(gameState, movesLeft, turn, playerNames)
             if isGameWon(gameState, playerTwoMarker):
@@ -214,8 +220,8 @@ def loop():
                     break
                 else:
                     turn = 'playerOne'
-                    
+                        
     if not playAgain():
         return
-    
+        
     loop()
