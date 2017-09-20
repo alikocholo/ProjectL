@@ -30,14 +30,11 @@ def playAgain():
         print('Do you want to play another game? (y/n)')
         option = raw_input().lower()
         if option == 'y':
-            option = True
-            break
+            return True
         elif option == 'n':
-            option = False
-            break
+            return False
         else:
             print('Please answer yes (y), or no (n).')
-    return option
 
 def isGameStateFull(gameState):
     """
