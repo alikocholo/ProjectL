@@ -9,7 +9,7 @@
 # 1. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
 #    player. Also the input should only take one character, as you currently have to confirm your selection by
 #    hitting enter. This functionality has to be removed if the players are going to be able to play smoothy.
-#  - Letters implemented but enter is still required. 
+#  - Letters implemented but enter is still required. (we need https://pypi.python.org/pypi/getch) to be able to get that functionallity.
 #
 # 2. Implement the time out for when the player takes to long to make a choice during their turn.
 #
@@ -50,8 +50,6 @@ def performMove(gameState, playerMarker, move, movesLeft):
     else:
         movesLeft[1].pop() #remove first element, such as to remove one marker from the moves left
     gameState[move] = playerMarker
-
-def printMoves(moves):
     
 def getPlayerMove(gameState):
     # Let the player type in their move. If the move is illegal or invalid, prompt the player for a new move.
