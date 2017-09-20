@@ -1,3 +1,4 @@
+
 # Uppsala univerity
 # Software Engineering and Project Management autumn 2017
 # Group L
@@ -8,6 +9,7 @@
 # 1. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
 #    player. Also the input should only take one character, as you currently have to confirm your selection by
 #    hitting enter. This functionality has to be removed if the players are going to be able to play smoothy.
+#  - Letters implemented but enter is still required. 
 #
 # 2. Implement the time out for when the player takes to long to make a choice during their turn.
 #
@@ -49,15 +51,20 @@ def performMove(gameState, playerMarker, move, movesLeft):
         movesLeft[1].pop() #remove first element, such as to remove one marker from the moves left
     gameState[move] = playerMarker
 
+def printMoves(moves):
+    
 def getPlayerMove(gameState):
     # Let the player type in their move. If the move is illegal or invalid, prompt the player for a new move.
 
-    moves = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    if (turn == 'playerOne'):
+        moves = ['q','w','e','a','s','d','z','x','c']
+    else: 
+        moves = ['y','u','i','h','j','k','b','n','m']
     while True:
-        print('Select the next move using 1-9 (where 1 is the top left square, 2 is top mid, 3 top right, 4 mid left, 5 center, 6 mid right, 7 bottom left, 8 bottom mid, 9 bottom right): ')
+        print('Select the next move using', moves)
         move = raw_input()
-        if (move in moves) and (isPositionFree(gameState, int(move))):
-            return int(move)
+        if (move in moves) and (isPositionFree(gameState, int(moves.index(move) + 1))):
+            return int(moves.index(move) + 1)
         else:
             print('Illegal or invalid move. Try again!')
 
