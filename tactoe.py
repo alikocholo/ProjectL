@@ -1,4 +1,4 @@
-
+import getch
 # Uppsala univerity
 # Software Engineering and Project Management autumn 2017
 # Group L
@@ -10,11 +10,6 @@
 #    player. Also the input should only take one character, as you currently have to confirm your selection by
 #    hitting enter. This functionality has to be removed if the players are going to be able to play smoothy.
 #  - Letters implemented but enter is still required. (we need https://pypi.python.org/pypi/getch) to be able to get that functionallity.
-#
-# 2. Implement the time out for when the player takes to long to make a choice during their turn.
-#
-# 3. If a player presses the button too quickly in succession the first press is registered, the second should prompt
-#    a text stating that the player is going to fast (or something similar?)
 #
 # 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
@@ -56,6 +51,10 @@ def performMove(gameState, playerMarker, move, movesLeft):
         movesLeft[1].pop() #remove first element, such as to remove one marker from the moves left
     gameState[move] = playerMarker
     
+def printMoves(moves): 
+    for i in range(0, 3):
+        print(moves[i*3:i*3+3])
+
 def getPlayerMove(gameState, turn):
     """
     Let the player type in their move.
@@ -68,8 +67,9 @@ def getPlayerMove(gameState, turn):
     else:
         moves = ['y', 'u', 'i', 'h', 'j', 'k', 'b', 'n', 'm']
     while True:
-        print('Select the next move using', moves)
-        move = input()
+        print('Select the next move using')
+        printMoves(moves)
+        move = getch.getch()
         if (move in moves) and (isPositionFree(gameState, int(moves.index(move) + 1))):
             return int(moves.index(move) + 1)
         else:

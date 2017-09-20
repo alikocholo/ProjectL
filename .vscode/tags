@@ -1,0 +1,56 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CertInstallCommand	../getpip.py	/^    class CertInstallCommand(InstallCommand):$/;"	kind:class	line:87
+InstallCommand	../getpip.py	/^    from pip.commands.install import InstallCommand$/;"	kind:namespace	line:83
+InstallRequirement	../getpip.py	/^    from pip.req import InstallRequirement$/;"	kind:namespace	line:84
+_b85alphabet	../getpip.py	/^    _b85alphabet = (b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"$/;"	kind:variable	line:43
+args	../getpip.py	/^        args = sys.argv[1:]$/;"	kind:variable	line:108
+b85decode	../getpip.py	/^    def b85decode(b):$/;"	kind:function	line:46
+b85decode	../getpip.py	/^    from base64 import b85decode$/;"	kind:namespace	line:41
+bootstrap	../getpip.py	/^def bootstrap(tmpdir=None):$/;"	kind:function	line:80
+cert_path	../getpip.py	/^        cert_path = os.path.join(tmpdir, "cacert.pem")$/;"	kind:variable	line:166
+getGameMode	../tactoe.py	/^def getGameMode():$/;"	kind:function	line:151
+getPlayerMove	../tactoe.py	/^def getPlayerMove(gameState, turn):$/;"	kind:function	line:59
+getPlayerNames	../tactoe.py	/^def getPlayerNames(gameMode):$/;"	kind:function	line:131
+getpip.py	../getpip.py	1;"	kind:file	line:1
+implicit_setuptools	../getpip.py	/^        implicit_setuptools = False$/;"	kind:variable	line:106
+implicit_wheel	../getpip.py	/^        implicit_wheel = False$/;"	kind:variable	line:113
+isGameStateFull	../tactoe.py	/^def isGameStateFull(gameState):$/;"	kind:function	line:39
+isGameWon	../tactoe.py	/^def isGameWon(gS, pM):$/;"	kind:function	line:84
+isPositionFree	../tactoe.py	/^def isPositionFree(gameState, move):$/;"	kind:function	line:78
+iterbytes	../getpip.py	/^    def iterbytes(buf):$/;"	kind:function	line:37
+iterbytes	../getpip.py	/^    iterbytes = iter$/;"	kind:variable	line:35
+loop	../tactoe.py	/^def loop():$/;"	kind:function	line:167
+main	../getpip.py	/^def main():$/;"	kind:function	line:179
+noqa	../getpip.py	/^            import setuptools  # noqa$/;"	kind:namespace	line:119
+noqa	../getpip.py	/^            import wheel  # noqa$/;"	kind:namespace	line:125
+os	../getpip.py	/^import os.path$/;"	kind:namespace	line:23
+parse_args	../getpip.py	/^        def parse_args(self, args):$/;"	kind:member	line:88
+path	../getpip.py	/^import os.path$/;"	kind:namespace	line:23
+performMove	../tactoe.py	/^def performMove(gameState, playerMarker, move, movesLeft):$/;"	kind:function	line:49
+pip	../getpip.py	/^    import pip$/;"	kind:namespace	line:82
+pkgutil	../getpip.py	/^import pkgutil$/;"	kind:namespace	line:24
+playAgain	../tactoe.py	/^def playAgain():$/;"	kind:function	line:22
+printGameState	../tactoe.py	/^def printGameState(gameState, movesLeft, turn, playerNames):$/;"	kind:function	line:97
+setuptools	../getpip.py	/^            import setuptools  # noqa$/;"	kind:namespace	line:119
+shutil	../getpip.py	/^import shutil$/;"	kind:namespace	line:25
+struct	../getpip.py	/^import struct$/;"	kind:namespace	line:27
+sys	../getpip.py	/^import sys$/;"	kind:namespace	line:26
+tactoe	../test_tictactoe.py	/^import tactoe$/;"	kind:namespace	line:2
+tactoe	../tic.py	/^import tactoe$/;"	kind:namespace	line:1
+tactoe.py	../tactoe.py	1;"	kind:file	line:1
+tempfile	../getpip.py	/^import tempfile$/;"	kind:namespace	line:28
+testDiagonally	../test_tictactoe.py	/^    def testDiagonally(self):$/;"	kind:member	line:35
+testDraw	../test_tictactoe.py	/^    def testDraw(self):$/;"	kind:member	line:71
+testEmptyGame	../test_tictactoe.py	/^    def testEmptyGame(self):$/;"	kind:member	line:26
+testGameWon	../test_tictactoe.py	/^class testGameWon(unittest.TestCase):$/;"	kind:class	line:24
+testHorizontal	../test_tictactoe.py	/^    def testHorizontal(self):$/;"	kind:member	line:47
+testVertically	../test_tictactoe.py	/^    def testVertically(self):$/;"	kind:member	line:59
+test_tictactoe.py	../test_tictactoe.py	1;"	kind:file	line:1
+tic.py	../tic.py	1;"	kind:file	line:1
+unittest	../test_tictactoe.py	/^import unittest$/;"	kind:namespace	line:1
+wheel	../getpip.py	/^            import wheel  # noqa$/;"	kind:namespace	line:125
