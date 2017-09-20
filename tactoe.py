@@ -128,13 +128,14 @@ def printGameState(gameState, movesLeft, turn, playerNames):
     print(padding+'     |   |')
     return
 
-def getPlayerNames(gameMode, playerNames):
+def getPlayerNames(gameMode):
     """
     if game mode is set to 0, get the names of player one and two, if the mode is set to 1
     get the name of the only player. if there gameMode is something else (this should not
     happen) implement some error handling.
     The function should be called with playerNames as an empty list
     """
+    playerNames = []
     if gameMode == '0':
         print('Enter the name of player one:')
         playerNames.insert(0, raw_input())
@@ -145,6 +146,7 @@ def getPlayerNames(gameMode, playerNames):
         playerNames.insert(0, raw_input())
     else:
         return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
+    return playerNames
 
 def getGameMode():
     """
@@ -170,15 +172,13 @@ def loop():
     playerTwoMarker = 'O'
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
-
-    playerNames = []
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
 
     if (gameMode == '1'): # prompt the user for new game if AI is selected, as AI not yet implemented
         print('AI not yet implemented!')
         return
 
-    getPlayerNames(gameMode, playerNames)
+    playerNames = getPlayerNames(gameMode)
 
     gameIsPlaying = True
 
