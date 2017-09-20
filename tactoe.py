@@ -20,8 +20,12 @@
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
 def playAgain():
-    # prompts the player if they want to play again. returning true of false. if something other than y or n is provided as input
-    # the function keeps calling input() asking for new input until it matches either case.
+    """
+    prompts the player if they want to play again. 
+    returning true of false. 
+    if something other than y or n is provided as input
+    the function keeps calling input() asking for new input until it matches either case.
+    """
     while True:
         print('Do you want to play another game? (y/n)')
         option = raw_input().lower()
@@ -36,15 +40,19 @@ def playAgain():
     return option
 
 def isGameStateFull(gameState):
-    # Check if the game state is filled and thus no more moves are possible.
-    # If an empty space is found, returns false immediately, if the state is checked and none is found return true
+    """
+    Check if the game state is filled and thus no more moves are possible.
+    If an empty space is found, returns false immediately, if the state is checked and none is found return true
+    """
     for i in range(1, 10):
         if isPositionFree(gameState, i):
             return False
     return True
         
 def performMove(gameState, playerMarker, move, movesLeft):
-    # Markes the move in the game state using players letter
+    """
+    Markes the move in the game state using players letter
+    """
     if (playerMarker == 'X'):
         movesLeft[0].pop() #pop first element, such as removing one marker from the moves left
     else:
@@ -52,26 +60,34 @@ def performMove(gameState, playerMarker, move, movesLeft):
     gameState[move] = playerMarker
     
 def getPlayerMove(gameState, turn):
-    # Let the player type in their move. If the move is illegal or invalid, prompt the player for a new move.
+    """
+    Let the player type in their move.
+    If the move is illegal or invalid, 
+    prompt the player for a new move.
+    """
 
-    if (turn == 'playerOne'):
-        moves = ['q','w','e','a','s','d','z','x','c']
-    else: 
-        moves = ['y','u','i','h','j','k','b','n','m']
+    if turn == 'playerOne':
+        moves = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
+    else:
+        moves = ['y', 'u', 'i', 'h', 'j', 'k', 'b', 'n', 'm']
     while True:
         print('Select the next move using', moves)
         move = raw_input()
         if (move in moves) and (isPositionFree(gameState, int(moves.index(move) + 1))):
             return int(moves.index(move) + 1)
         else:
-            print('Illegal or invalid move. Try again!')
+            print 'Illegal or invalid move. Try again!'
 
 def isPositionFree(gameState, move):
-    # Check if the move 'move' is valied within the gamestate 'gameState'
-    return(gameState[move] == ' ')
+    """
+    Check if the move 'move' is valied within the gamestate 'gameState'
+    """
+    return gameState[move] == ' '
 
 def isGameWon(gS, pM):
-    # Check if the gamestate (gS) contains three of the given marker (pM) in a row.
+    """
+    Check if the gamestate (gS) contains three of the given marker (pM) in a row.
+    """
     return ((gS[1] == pM and gS[2] == pM and gS[3] == pM) or #top
             (gS[4] == pM and gS[5] == pM and gS[6] == pM) or #middle
             (gS[7] == pM and gS[8] == pM and gS[9] == pM) or #bottom
@@ -82,12 +98,14 @@ def isGameWon(gS, pM):
             (gS[1] == pM and gS[5] == pM and gS[9] == pM))   #diagonal 2
 
 def printGameState(gameState, movesLeft, turn, playerNames):
-    # Prints the game state in the terminal.
-    # gameState is a list representing the game state by 9 slots, one for
-    # each position on the board. as illustrated here:
-    # [1 2 3]
-    # [4 5 6]
-    # [7 8 9]
+    """
+    Prints the game state in the terminal.
+    gameState is a list representing the game state by 9 slots, one for
+    each position on the board. as illustrated here:
+    [1 2 3]
+    [4 5 6]
+    [7 8 9]
+    """
     padding = "                                          " # set amount of space to pad the printed output
     if turn == 'playerOne':
         playerTurn = playerNames[0]
@@ -114,10 +132,12 @@ def printGameState(gameState, movesLeft, turn, playerNames):
     return
 
 def getPlayerNames(gameMode, playerNames):
-    # if game mode is set to 0, get the names of player one and two, if the mode is set to 1
-    # get the name of the only player. if there gameMode is something else (this should not
-    # happen) implement some error handling.
-    # The function should be called with playerNames as an empty list
+    """
+    if game mode is set to 0, get the names of player one and two, if the mode is set to 1
+    get the name of the only player. if there gameMode is something else (this should not
+    happen) implement some error handling.
+    The function should be called with playerNames as an empty list
+    """
     if gameMode == '0':
         print('Enter the name of player one:')
         playerNames.insert(0, raw_input())
@@ -130,7 +150,9 @@ def getPlayerNames(gameMode, playerNames):
         return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
 
 def getGameMode():
-    # Prompts the user to choose game mode. 0 is PvP and 1 is PvAI. 
+    """
+    Prompts the user to choose game mode. 0 is PvP and 1 is PvAI. 
+    """
     gameModes = ['0','1']
     print('Please choose player vs player or player vs AI: ')
     print('Input 0 for PvP and 1 for PvAI(not yet implemented)')
