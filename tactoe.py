@@ -28,7 +28,7 @@ def playAgain():
     """
     while True:
         print('Do you want to play another game? (y/n)')
-        option = raw_input().lower()
+        option = input().lower()
         if option == 'y':
             return True
         elif option == 'n':
@@ -69,11 +69,11 @@ def getPlayerMove(gameState, turn):
         moves = ['y', 'u', 'i', 'h', 'j', 'k', 'b', 'n', 'm']
     while True:
         print('Select the next move using', moves)
-        move = raw_input()
+        move = input()
         if (move in moves) and (isPositionFree(gameState, int(moves.index(move) + 1))):
             return int(moves.index(move) + 1)
         else:
-            print 'Illegal or invalid move. Try again!'
+            print('Illegal or invalid move. Try again!')
 
 def isPositionFree(gameState, move):
     """
@@ -138,12 +138,12 @@ def getPlayerNames(gameMode):
     playerNames = []
     if gameMode == '0':
         print('Enter the name of player one:')
-        playerNames.insert(0, raw_input())
+        playerNames.insert(0, input())
         print('Enter the name of player two:')
-        playerNames.insert(1, raw_input())
+        playerNames.insert(1, input())
     elif gameMode == '1':
         print('Enter the name of player one:')
-        playerNames.insert(0, raw_input())
+        playerNames.insert(0, input())
     else:
         return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
     return playerNames
@@ -155,14 +155,14 @@ def getGameMode():
     gameModes = ['0','1']
     print('Please choose player vs player or player vs AI: ')
     print('Input 0 for PvP and 1 for PvAI(not yet implemented)')
-    gameMode = raw_input()
+    gameMode = input()
     while True:
         if (gameMode in gameModes):
             return gameMode
         else:
             print('Please select a valid game mode!')
             print('Enter 0 for PVP or 1 for PvAI(not yet implemented)')
-            gameMode = raw_input()
+            gameMode = input()
 
 def loop():
     # set up a clear board, player stones indicators, let playerOne start and initiate the game
