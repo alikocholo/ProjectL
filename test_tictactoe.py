@@ -9,25 +9,19 @@ import tactoe
 
 #TODO:
 # 
-# 2. Depending om indexing design decisions, change testGameWon to reflect that
-#
-# 3. Implement test for 
-#    [q,w,e]     [t,y,u]            [1,2,3]    [0,1,2]
-#    [a,s,d] and [g,h,j] mapping to [4,5,6] or [3,4,5] depeding on designdecision
-#    [z,x,c]     [b,n,m]            [7,8,9]    [6,7,8]
+# 1. Implement test for getPlayerMove()
+#    [q,w,e]     [t,y,u]            [1,2,3]
+#    [a,s,d] and [g,h,j] mapping to [4,5,6]
+#    [z,x,c]     [b,n,m]            [7,8,9] 
 # 
-# 6. Implement test faulty input
-# 8. moar stuff
+# 2. Implement test faulty input
+# 3. Implement test for more edgecases
 #
-# update!
 # 
-# functions tested isGameWon, playAgain,GetPlayerNames, isGamestatefull, performMove
-# functions left to test getPlayerMove(io), isPositionFree, getGameMove
-# functions not tested printGameState, printMoves (printfunction no need to test)
+# Functions not tested printGameState, printMoves (printfunctions I see no need to test)
+# Comment: lists are of 10 elements but index 0 never used, ' ' for first element in the list. 
 
-
-#lists are of 10 elements but index 0 never used, ' ' for first element in the list. 
-#tests all possible ways of winning the game
+#Tests all possible ways of winning the game
 class testGameWon(unittest.TestCase):
     
     def testEmptyGame(self):
@@ -80,10 +74,10 @@ class testGameWon(unittest.TestCase):
         self.assertEqual(tactoe.isGameWon(gameStateDrawn, 'Y'), False)
         self.assertEqual(tactoe.isGameWon(gameStateDrawn, 'X'), False)
 
-#tests all userinput functions
+#tests userinput functions
 class testUserInputs(unittest.TestCase):
  
-    #mocking a userinput
+    #mock simulates userinput
     @mock.patch('builtins.input', side_effect='n')
     def testPlayAgainYes(self, input):
         a = io.StringIO()
@@ -95,7 +89,6 @@ class testUserInputs(unittest.TestCase):
     @mock.patch('builtins.input', side_effect='y')
     def testPlayAgainNo(self, input):
         a = io.StringIO()
-        #redirects the the output from playagain function
         with redirect_stdout(a):
             ans = tactoe.playAgain()
         self.assertEqual(ans, True)
@@ -104,23 +97,45 @@ class testUserInputs(unittest.TestCase):
     def testGetPlayerNames1(self, input):
         playernames = []
         a = io.StringIO()
-        #redirects the the output from playagain function
         with redirect_stdout(a):
             actualplayers = tactoe.getPlayerNames('0')    
         self.assertEqual(actualplayers, ['Orjan', 'Lisa'])
         self.assertTrue(len(actualplayers) == 2)
 
     @mock.patch('builtins.input', side_effect=['examplename'])
-    def testGetPlayerNames1(self, input):
+    def testGetPlayerNames2(self, input):
         playernames = []
         a = io.StringIO()
-        #redirects the the output from playagain function
         with redirect_stdout(a):
             actualplayers = tactoe.getPlayerNames('1')    
         self.assertEqual(actualplayers[0], 'examplename')
         self.assertTrue(len(actualplayers) == 2)
+    
+    #tests the correct choosing of pvp gamemode = 1
+    @mock.patch('builtins.input', side_effect= '0')
+    def testGetGameModePvp(self, input):
+        a = io.StringIO()
+        with redirect_stdout(a):
+            actualgamemode = tactoe.getGameMode()
+        self.assertEqual(actualgamemode, '0')
 
-#tests all gamealtering functions
+    #tests the correct choosing of AI gamemode = 1
+    @mock.patch('builtins.input', side_effect= '1')
+    def testGetGameModePvAI(self, input):
+        a = io.StringIO()
+        with redirect_stdout(a):
+            actualgamemode = tactoe.getGameMode()
+        self.assertEqual(actualgamemode, '1')
+
+    #tests entereing wrong alt before choosing AI =1
+    @mock.patch('builtins.input', side_effect= ['ö','o','3','l','5','1'])
+    def testGetGameMode(self, input):
+        a = io.StringIO()
+        with redirect_stdout(a):
+            actualgamemode = tactoe.getGameMode()
+        self.assertEqual(actualgamemode, '1')
+
+#tests gamealtering functions
 class testGameActions(unittest.TestCase):
 
     def testisGameStateFull(self):
@@ -165,6 +180,33 @@ class testGameActions(unittest.TestCase):
             self.assertEqual(len(movesLeft[1]),size)
             self.assertEqual(gameState[iterate], 'Y')
             iterate = iterate + 1
+
+    def testIsPositionFree(self):
+        gameState = [' ',' ',' ',' ','X','X','O',' ',' ',' ']
+        pos1 = tactoe.isPositionFree(gameState,1)
+        pos2 = tactoe.isPositionFree(gameState,2)
+        pos3 = tactoe.isPositionFree(gameState,3)
+        self.assertTrue(pos1)
+        self.assertTrue(pos2)
+        self.assertTrue(pos3)
+        
+        pos4 = tactoe.isPositionFree(gameState,4)
+        pos5 = tactoe.isPositionFree(gameState,5)
+        pos6 = tactoe.isPositionFree(gameState,6)
+        self.assertFalse(pos4)
+        self.assertFalse(pos5)
+        self.assertFalse(pos6)
+
+        pos7 = tactoe.isPositionFree(gameState,7)
+        pos8 = tactoe.isPositionFree(gameState,8)
+        pos9 = tactoe.isPositionFree(gameState,9)
+        self.assertTrue(pos7)
+        self.assertTrue(pos8)
+        self.assertTrue(pos9)
+
+        #should always be false since its placement is outside board?
+        edge = tactoe.isPositionFree(gameState,0)
+        self.assertFalse(edge)
 
 
 if __name__ == '__main__':
