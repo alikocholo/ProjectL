@@ -63,7 +63,7 @@ def getPlayerMove(gameState, turn):
     If the move is illegal or invalid, 
     prompt the player for a new move.
     """
-
+    esc = '\x1b'
     if turn == 'playerOne':
         moves = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
     else:
@@ -71,10 +71,17 @@ def getPlayerMove(gameState, turn):
     while True:
         print('Select the next move using')
         printMoves(moves)
-        move = getch.getch()
-        if (move in moves) and (isPositionFree(gameState, int(moves.index(move) + 1))):
-            return int(moves.index(move) + 1)
-        else:
+        print('or press ESC to quit.')
+        try:
+            move = getch.getch()
+            move = move.lower()
+            if move == esc:
+                return None
+            elif (move in moves) and (isPositionFree(gameState, int(moves.index(move) + 1))):
+                return int(moves.index(move) + 1)
+            else:
+                print('Illegal or invalid move. Try again!')
+        except:
             print('Illegal or invalid move. Try again!')
 
 def isPositionFree(gameState, move):
@@ -191,6 +198,8 @@ def loop():
             # finally change the gameState according to the player move, check and handle result.
             printGameState(gameState, movesLeft, turn, playerNames)
             move = getPlayerMove(gameState, turn)
+            if move == None:
+                break
             performMove(gameState, playerOneMarker, move, movesLeft)
             printGameState(gameState, movesLeft, turn, playerNames)
             if isGameWon(gameState, playerOneMarker):

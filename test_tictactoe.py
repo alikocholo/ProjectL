@@ -1,21 +1,16 @@
-import unittest, mock, io
+import unittest, io
+from unittest import mock
 from contextlib import redirect_stdout
 import tactoe
 
 # Uppsala University
 # Software Engineering and Project Management autumn 2017
 # Group L
-# Author Linn Löfquist
+# Author Linn Löfquist, Gabi Rolih
 
 #TODO:
 # 
-# 1. Implement test for getPlayerMove()
-#    [q,w,e]     [t,y,u]            [1,2,3]
-#    [a,s,d] and [g,h,j] mapping to [4,5,6]
-#    [z,x,c]     [b,n,m]            [7,8,9] 
-# 
-# 2. Implement test faulty input
-# 3. Implement test for more edgecases
+# 1. Implement test for more edgecases
 #
 # 
 # Functions not tested printGameState, printMoves (printfunctions I see no need to test)
@@ -135,6 +130,7 @@ class testUserInputs(unittest.TestCase):
             actualgamemode = tactoe.getGameMode()
         self.assertEqual(actualgamemode, '1')
 
+
 #tests gamealtering functions
 class testGameActions(unittest.TestCase):
 
@@ -205,10 +201,97 @@ class testGameActions(unittest.TestCase):
         self.assertTrue(pos9)
 
         #should always be false since its placement is outside board?
-        edge = tactoe.isPositionFree(gameState,0)
-        self.assertFalse(edge)
+        #edge = tactoe.isPositionFree(gameState,0)
+        #self.assertFalse(edge)
 
+    #tests mappings between keyboard and game board for each player
+    @mock.patch('getch.getch', side_effect= ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c'])
+    def testMoveMappingP1(self, input):
+        turn = 'playerOne'
+        gameState = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        comparison = 1
+        playerInput = io.StringIO()
+
+        for i in range(9):
+            with redirect_stdout(playerInput):
+                result = tactoe.getPlayerMove(gameState, turn)
+                self.assertEqual(result, comparison)
+                comparison += 1
+                i += 1
+            
+    @mock.patch('getch.getch', side_effect= ['y', 'u', 'i', 'h', 'j', 'k', 'b', 'n', 'm'])
+    def testMoveMappingP2(self, input):
+        turn = 'playerTwo'
+        gameState = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        comparison = 1
+        playerInput = io.StringIO()
+
+        for i in range(9):
+            with redirect_stdout(playerInput):
+                result = tactoe.getPlayerMove(gameState, turn)
+                self.assertEqual(result, comparison)
+                comparison += 1
+                i += 1
+
+    #tests taking an illegal move and then correct input for each player
+    @mock.patch('getch.getch', side_effect= ['b', 'p', 'w'])
+    def testIllegalMovesEmptyP1(self, input):
+        turn = 'playerOne'
+        gameState = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getPlayerMove(gameState, turn)
+            self.assertEqual(result, 2)
+            
+    @mock.patch('getch.getch', side_effect= ['w', '\t', 'u'])
+    def testIllegalMovesEmptyP2(self, input):
+        turn = 'playerTwo'
+        gameState = [' ','X',' ',' ',' ',' ',' ',' ',' ',' ']
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getPlayerMove(gameState, turn)
+            self.assertEqual(result, 2)
+            
+    #tests trying to place the stone in a field that is already taken
+    @mock.patch('getch.getch', side_effect= ['u', 'i'])
+    def testIllegalMovesTaken(self, input):
+        turn = 'playerTwo'
+        gameState = [' ','X','X',' ',' ',' ',' ','O',' ',' ']
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getPlayerMove(gameState, turn)
+            self.assertEqual(result, 3)            
+            
+    #Tests moves in uppercase
+    @mock.patch('getch.getch', side_effect= ['W'])
+    def testUppercase(self, input):
+        turn = 'playerOne'
+        gameState = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getPlayerMove(gameState, turn)
+            self.assertEqual(result, 2)
+
+    #Tests unusual characters
+    @mock.patch('getch.getch', side_effect= ['å', 'w'])
+    def testUnusualChar(self, input):
+        turn = 'playerOne'
+        gameState = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getPlayerMove(gameState, turn)
+            self.assertEqual(result, 2)
+
+    #Tests ESC button
+    @mock.patch('getch.getch', side_effect= '\x1b')
+    def testUnusualChar(self, input):
+        turn = 'playerOne'
+        gameState = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getPlayerMove(gameState, turn)
+            self.assertEqual(result, None)
+    
 
 if __name__ == '__main__':
     unittest.main()
-
