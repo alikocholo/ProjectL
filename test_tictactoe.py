@@ -8,11 +8,7 @@ import tactoe
 # Group L
 # Author Linn Löfquist, Gabi Rolih
 
-#TODO:
-# 
-# 1. Implement test for more edgecases
-#
-# 
+ 
 # Functions not tested printGameState, printMoves (printfunctions I see no need to test)
 # Comment: lists are of 10 elements but index 0 never used, ' ' for first element in the list. 
 
@@ -199,10 +195,6 @@ class testGameActions(unittest.TestCase):
         self.assertTrue(pos7)
         self.assertTrue(pos8)
         self.assertTrue(pos9)
-
-        #should always be false since its placement is outside board?
-        #edge = tactoe.isPositionFree(gameState,0)
-        #self.assertFalse(edge)
 
     #tests mappings between keyboard and game board for each player
     @mock.patch('getch.getch', side_effect= ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c'])
