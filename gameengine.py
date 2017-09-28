@@ -88,30 +88,6 @@ def getMinimaxMove(gameState, playerMarker):
     else:
         return "Incorrect player marker!"
 
-def test():
-    assert isGameWon(list(' XXX   OOO'),'X')==True
-    assert isGameWon(list(' X   OO  X'),'X')==False
-    assert isGameWon(list(' X  X  X  '),'X')==True
-    assert isGameWon(list(' X O OO  X'),'O')==False
-    assert isGameWon(list(' X OOX  OX'),'X')==True
-    assert isGameWon(list(' X OOO O X'),'O')==True
-    assert isGameWon(list('          '),'0')==False
-    assert isGameWon(list('          '),'X')==False
-    assert len(getEmptySquares(list('           '))) == 9
-    assert len(getEmptySquares(list('           '))) != 8
-    assert len(getEmptySquares(list('           '))) != 10
-    assert getMinimaxMove(list(' X    O XO'),'X')==(1,3)    
-    assert getMinimaxMove(list(' OXX   XOO'),'X')==(1,5)
-    assert getMinimaxMove(list(' XX   OO O'),'X') == (1,3)
-    assert getMinimaxMove(list(' X  OO O  '),'X') == (-1,2)
-    assert getMinimaxMove(list(' XXOOO XO '),'X') == (0,6)
-    assert getMinimaxMove(list(' OO XXO XO'),'X') == (0,3)
-    assert getMinimaxMove(list(' XX OO XO '),'O') ==(-1,6)
-    assert getMinimaxMove(list(' XX  O XOO'),'O') ==(1,3) # no chance for O to win
-    assert getMinimaxMove(list('          '),'X') == (0,5)
-
-    return "Test cases passed"
-
 def getMinimaxAIMove(gameState, playerMarker):
     a,b = getMinimaxMove(gameState,playerMarker)
     return b
@@ -133,5 +109,3 @@ def getAIMove(gameState, playerMarker, difficultyOption):
         return getMinimaxAIMove(gameState, playerMarker)
     else:
         return None
-
-print (test())
