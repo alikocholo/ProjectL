@@ -5,12 +5,6 @@ import getch
 # Author: Casper Strömberg, Henrik Thorsell
 
 # TODO:
-#
-# 1. Currently the way to control the game is by 1-9, this should be changed to two sets of letters, one for each
-#    player. Also the input should only take one character, as you currently have to confirm your selection by
-#    hitting enter. This functionality has to be removed if the players are going to be able to play smoothy.
-#  - Letters implemented but enter is still required. (we need https://pypi.python.org/pypi/getch) to be able to get that functionallity.
-#
 # 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
@@ -57,6 +51,26 @@ def printMoves(moves):
     for i in range(0, 3):
         print(moves[i*3:i*3+3])
 
+def getAIDifficulty():
+    """
+    Let the player select the AI
+    difficulty. If the input is invalid
+    prompt the player for a new option.
+    """
+
+    options = ['1','2','3']
+
+    while True:
+          print('Select AI difficulty: ')
+          print('Easy provides no adviersity, hard is undefeatable.')
+          print('Medium randomly choses between easy and hard.')
+          print('1 - easy, 2 - medium, 3 - hard.')  
+          selection = getch.getch()
+          if (selection in options):
+              return selection
+          else:
+              print ('Invalid selection, please try again!')
+        
 def getPlayerMove(gameState, turn):
     """
     Let the player type in their move.
@@ -183,6 +197,9 @@ def loop():
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
+    if gameMode == '1':
+        difficultyOption = getAIDifficulty()
+
 
     #if (gameMode == '1'): # prompt the user for new game if AI is selected, as AI not yet implemented
     #    print('AI not yet implemented!')
@@ -212,10 +229,12 @@ def loop():
                 else:
                     turn = 'playerTwo'
         else:
-                    # Player twos turn. Do the same thing as player one. If Game mode is set to PvsAI (1), instead call the function for AI to make a move.
+                    # Player twos turn. Do the same thing as player one. If Game mode is set to PvsAI (1),
+                    #instead call the function for AI to make a move.
             printGameState(gameState, movesLeft, turn, playerNames)
             if (gameMode == '1'):
-                move = getAIMove(gameState, playerTwoMarker) # Change this function call to whatever game-engine we decide to integrate with.
+                move = getAIMove(gameState, playerTwoMarker, difficultyOption) # Change this function call to whatever
+                                                                               #game-engine we decide to integrate with.
             else:
                 move = getPlayerMove(gameState, turn)
             performMove(gameState, playerTwoMarker, move, movesLeft)
