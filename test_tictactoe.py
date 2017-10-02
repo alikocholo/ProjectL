@@ -2,14 +2,29 @@ import unittest, io
 from unittest import mock
 from contextlib import redirect_stdout
 import tactoe
+import gameengine 
 
 # Uppsala University
 # Software Engineering and Project Management autumn 2017
 # Group L
 # Author Linn Löfquist, Gabi Rolih
-
- 
+#
+# TODO:
+# 1. Unit test for more AI moves(level: hard) 
+#    functions: getMiniMaxAiMove/getMiniMaxMove (gameengine.py)
+#
+# 2. Unit test getAiMove(gameengine.py)
+#
+# 3. Unit test getAiDifficulty(in tactoe.py)
+#
+# 4. isPositionfree and isgameWon (gameengine), duplicates? already tested in tactoe.py
+#
+# 5. Test gameengine and tactoe integrated, how do dis?
+#
+# 6. Can not test level medium, since its random. Implementation decisions?
+#
 # Functions not tested printGameState, printMoves (printfunctions I see no need to test)
+# Also getRekd not tested (can not test random).
 # Comment: lists are of 10 elements but index 0 never used, ' ' for first element in the list. 
 
 #Tests all possible ways of winning the game
@@ -283,7 +298,141 @@ class testGameActions(unittest.TestCase):
         with redirect_stdout(playerInput):
             result = tactoe.getPlayerMove(gameState, turn)
             self.assertEqual(result, None)
-    
+ 
+#tests gameengine component functions
+class testGameEngine(unittest.TestCase):
+
+    #tests the correct empty slots
+    def testGetEmptySquaresEmpty(self):
+        gamestate = [' '] * 10
+        expectedIndexes = [1,2,3,4,5,6,7,8,9]
+        self.assertEqual(gameengine.getEmptySquares(gamestate), expectedIndexes)
+
+    #tests different states of non empty gamestates
+    def testGetEmptySquaresNotEmpty(self):
+        gamestate = [' ', 'X',' ',' ',' ','O',' ',' ',' ','0'] 
+        expectedIndexes = [2,3,4,6,7,8]
+        self.assertEqual(gameengine.getEmptySquares(gamestate), expectedIndexes)
+
+        gamestate = [' ', 'X','X',' ',' ','O',' ',' ',' ','0'] 
+        expectedIndexes = [3,4,6,7,8]
+        self.assertEqual(gameengine.getEmptySquares(gamestate), expectedIndexes)
+
+        gamestate = [' ', 'X','X','O','O','O',' ',' ',' ','0'] 
+        expectedIndexes = [6,7,8]
+        self.assertEqual(gameengine.getEmptySquares(gamestate), expectedIndexes)
+
+        gamestate = [' ', 'X','X','O','O','O','X',' ',' ','0'] 
+        expectedIndexes = [7,8]
+        self.assertEqual(gameengine.getEmptySquares(gamestate), expectedIndexes)
+
+        gamestate = [' ', 'X','X','O','O','O','X','O',' ','0'] 
+        expectedIndexes = [8]
+        self.assertEqual(gameengine.getEmptySquares(gamestate), expectedIndexes)
+
+        gamestate = ['X', 'X','X','O','O','O','X','X','X','0'] 
+        expectedIndexes = []
+        self.assertEqual(gameengine.getEmptySquares(gamestate), expectedIndexes)
+
+    #tests the easy level AI
+    def testgetNextAvaliableMove(self):
+        gamestate = [' ', ' ','X','O','X','O',' ',' ',' ','0'] 
+        player = "X"
+        self.assertEqual(gameengine.getNextAvailableMove(gamestate,player), 1)
+
+        gamestate = [' ', 'X',' ',' ',' ','O',' ',' ',' ','0'] 
+        player = "X"
+        self.assertEqual(gameengine.getNextAvailableMove(gamestate,player), 2)
+        
+        gamestate = [' ', 'O','X',' ','X','O','O','X','X',' '] 
+        player = "X"
+        self.assertEqual(gameengine.getNextAvailableMove(gamestate,player), 3)
+
+        gamestate = [' ', 'X','X','O',' ','O',' ',' ',' ','0'] 
+        player = "X"
+        self.assertEqual(gameengine.getNextAvailableMove(gamestate,player), 4)
+
+        gamestate = [' ', 'O','X','O','X','O',' ',' ',' ','0'] 
+        player = "X"
+        self.assertEqual(gameengine.getNextAvailableMove(gamestate,player), 6)
+
+        gamestate = [' ', 'O','X','O','X','O','O','X','X',' '] 
+        player = "X"
+        self.assertEqual(gameengine.getNextAvailableMove(gamestate,player), 9)
+
+        gamestate = [' ', 'O','X','O','X','O','O','X','X','0'] 
+        player = "X"
+        self.assertEqual(gameengine.getNextAvailableMove(gamestate,player), None)
+
+    #tests hard level AI, AI's first placement on the board
+    def testGetMiniMaxAIMoveRoundOne(self):
+        gamestate = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 5)
+
+        #[X,2,3]    [X,2,3]
+        #[4,5,6] -> [4,O,6]
+        #[7,8,9]    [7,8,9]
+        gamestate = [' ','X',' ',' ',' ',' ',' ',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 5)
+
+        #[1,X,3]    [O,X,3]
+        #[4,5,6] -> [4,5,6] 
+        #[7,8,9]    [7,8,9]
+        gamestate = [' ',' ','X',' ',' ',' ',' ',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 1)
+
+        #[1,2,X]    [1,2,X]
+        #[4,5,6] -> [4,O,6]
+        #[7,8,9]    [7,8,9]
+        gamestate = [' ',' ',' ','X',' ',' ',' ',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 5)
+
+        #[1,2,3]    [O,2,3]
+        #[X,5,6] -> [X,5,6]
+        #[7,8,9]    [7,8,9]
+        gamestate = [' ',' ',' ',' ','X',' ',' ',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 1)
+
+        #[1,2,3]    [O,2,3]
+        #[4,X,6] -> [4,X,6]
+        #[7,8,9]    [7,8,9]
+        gamestate = [' ',' ',' ',' ',' ','X',' ',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 1)
+
+        #[1,2,3]    [1,2,O]
+        #[4,5,X] -> [4,5,X]
+        #[7,8,9]    [7,8,9]
+        gamestate = [' ',' ',' ',' ',' ',' ','X',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 3)
+
+        #[1,2,3]    [1,2,3]
+        #[4,5,6] -> [4,O,6]
+        #[X,8,9]    [X,8,9]
+        gamestate = [' ',' ',' ',' ',' ',' ',' ','X',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 5)
+
+        #[1,2,3]    [1,O,3]
+        #[4,5,6] -> [4,5,6]
+        #[7,X,9]    [7,X,9]
+        gamestate = [' ',' ',' ',' ',' ',' ',' ',' ','X',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 2)
+
+        #[1,2,3]    [1,2,3]
+        #[4,5,6] -> [4,O,6]
+        #[7,8,X]    [7,8,X]
+        gamestate = [' ',' ',' ',' ',' ',' ',' ',' ',' ','X']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 5)
+
 
 if __name__ == '__main__':
     unittest.main()
