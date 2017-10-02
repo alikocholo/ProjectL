@@ -9,6 +9,7 @@ import getch
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
 from gameengine import getAIMove
+import random
 
 def playAgain():
     """
@@ -165,7 +166,7 @@ def getPlayerNames(gameMode):
         print('Enter the name of player two:')
         playerNames.insert(1, input())
     elif gameMode == '1':
-        print('Enter the name of player one:')
+        print('Enter your name:')
         playerNames.insert(0, input())
         playerNames.insert(1, "The Robot Overlord (AI)")
     else:
@@ -178,14 +179,14 @@ def getGameMode():
     """
     gameModes = ['0','1']
     print('Please choose player vs player or player vs AI: ')
-    print('Input 0 for PvP and 1 for PvAI(not yet implemented)')
+    print('Input 0 for PvP and 1 for PvAI')
     gameMode = input()
     while True:
         if (gameMode in gameModes):
             return gameMode
         else:
             print('Please select a valid game mode!')
-            print('Enter 0 for PVP or 1 for PvAI(not yet implemented)')
+            print('Enter 0 for PVP or 1 for PvAI')
             gameMode = input()
 
 def loop():
@@ -198,6 +199,8 @@ def loop():
     turn = 'playerOne'
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
     if gameMode == '1':
+        firstMove = ['playerOne', 'playerTwo']
+        turn = random.choice(firstMove)
         difficultyOption = getAIDifficulty()
 
 
@@ -240,7 +243,10 @@ def loop():
             performMove(gameState, playerTwoMarker, move, movesLeft)
             printGameState(gameState, movesLeft, turn, playerNames)
             if isGameWon(gameState, playerTwoMarker):
-                print("Player two won!")
+                if gameMode == '1':
+                    print("The Robot Overlord (AI) won!")
+                else:
+                    print("Player two won!")
                 gameIsPlaying = False
             else:
                 if isGameStateFull(gameState):
