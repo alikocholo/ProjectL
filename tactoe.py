@@ -253,3 +253,64 @@ def loop():
         return
         
     loop()
+
+def loopExternal(playerOneName, playerTwoName, gameMode):
+    # set up a clear board, player stones indicators, let playerOne start and initiate
+    #the game
+    gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
+    # indices represents the position of the board (index 1 = top let, index 2 = top mid etc.
+    playerNames = [playerOneName, playerTwoName]
+    playerOneMarker = 'X'
+    playerTwoMarker = 'O'
+    movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
+    turn = 'playerOne'
+    if gameMode == '1':
+        difficultyOption = getAIDifficulty()
+
+    gameIsPlaying = True
+    result = 'none'
+    while gameIsPlaying:
+        if turn == 'playerOne':
+            # Player ones turn. First print the gameState, then get a valid move from the player
+            # finally change the gameState according to the player move, check and handle result.
+            printGameState(gameState, movesLeft, turn, playerNames)
+            move = getPlayerMove(gameState, turn)
+            if move == None:
+                break
+            performMove(gameState, playerOneMarker, move, movesLeft)
+            printGameState(gameState, movesLeft, turn, playerNames)
+            if isGameWon(gameState, playerOneMarker):
+                print('Player one (' + str(playerNames[0]) + ') won!')
+                result = 'playerOne'
+                gameIsPlaying = False
+            else:
+                if isGameStateFull(gameState):
+                    print("Its a draw!")
+                    result = 'draw'
+                    break
+                else:
+                    turn = 'playerTwo'
+        else:
+                    # Player twos turn. Do the same thing as player one. If Game mode is set to PvsAI (1),
+                    #instead call the function for AI to make a move.
+            printGameState(gameState, movesLeft, turn, playerNames)
+            if (gameMode == '1'):
+                move = getAIMove(gameState, playerTwoMarker, difficultyOption) # Change this function call to whatever
+                                                                               #game-engine we decide to integrate with.
+            else:
+                move = getPlayerMove(gameState, turn)
+            performMove(gameState, playerTwoMarker, move, movesLeft)
+            printGameState(gameState, movesLeft, turn, playerNames)
+            if isGameWon(gameState, playerTwoMarker):
+                print("Player two won!")
+                result = 'playerTwo'
+                gameIsPlaying = False
+            else:
+                if isGameStateFull(gameState):
+                    print("Its a draw!")
+                    result = 'draw'
+                    break
+                else:
+                    turn = 'playerOne'
+                
+    return result
