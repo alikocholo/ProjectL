@@ -2,7 +2,8 @@ import unittest, io
 from unittest import mock
 from contextlib import redirect_stdout
 import tactoe
-import gameengine 
+import gameengine
+from random import Random
 
 # Uppsala University
 # Software Engineering and Project Management autumn 2017
@@ -12,8 +13,6 @@ import gameengine
 # TODO:
 # 1. Unit test for more AI moves(level: hard) 
 #    functions: getMiniMaxAiMove/getMiniMaxMove (gameengine.py)
-#
-# 2. Unit test getAiMove(gameengine.py)
 #
 # 3. Unit test getAiDifficulty(in tactoe.py)
 #
@@ -432,6 +431,61 @@ class testGameEngine(unittest.TestCase):
         gamestate = [' ',' ',' ',' ',' ',' ',' ',' ',' ','X']
         playermarker = 'O'
         self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 5)
+
+    def testGetMiniMaxAIMoveObviousMoves(self):
+        #Make a move when about to win
+        #[1,2,X]    [1,O,X]
+        #[4,O,6] -> [4,O,6]
+        #[X,O,X]    [X,O,X]
+        gamestate = [' ',' ',' ','X',' ','O',' ','X','O','X']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 2)
+
+        #Prevent player from winning
+        #[O,2,3]    [O,2,3]
+        #[X,X,6] -> [X,X,O]
+        #[7,8,9]    [7,8,9]
+        gamestate = [' ','O',' ',' ','X','X',' ',' ',' ',' ']
+        playermarker = 'O'
+        self.assertEqual(gameengine.getMinimaxAIMove(gamestate, playermarker), 6)
+
+    def testGetAIMove(self):
+        #Test move when game state is in easy mode
+        #[1,2,X]    [X,2,X]
+        #[4,O,6] -> [4,O,6]
+        #[X,O,X]    [X,O,X]
+        gamestate = [' ',' ',' ','X',' ','O',' ','X','O','X']
+        playermarker = 'O'
+        difficultyoption = '1'
+        self.assertEqual(gameengine.getAIMove(gamestate, playermarker, difficultyoption), 1)
+
+        #Test move when game state is in medium mode
+        #[1,2,X]    [1,O,X]
+        #[4,O,6] -> [4,O,6]
+        #[X,O,X]    [X,O,X]
+        gamestate = [' ',' ',' ','X',' ','O',' ','X','O','X']
+        playermarker = 'O'
+        difficultyoption = '3'
+        self.assertTrue(gameengine.getAIMove(gamestate, playermarker, difficultyoption) in [1,2])
+
+        #Test move when game state is in hard mode
+        #[1,2,X]    [1,O,X] | [O,2,X]
+        #[4,O,6] -> [4,O,6] | [4,O,6]
+        #[X,O,X]    [X,O,X] | [X,O,X]
+        gamestate = [' ',' ',' ','X',' ','O',' ','X','O','X']
+        playermarker = 'O'
+        difficultyoption = '3'
+        self.assertEqual(gameengine.getAIMove(gamestate, playermarker, difficultyoption), 2)
+
+
+    @mock.patch('getch.getch', side_effect=['u', 'å', '\t', '3'])
+    def testGetAIDifficulty(self, input):
+        #Test pressing different keys before the correct one
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getAIDifficulty()
+            self.assertEqual(result, '3')
+
 
 
 if __name__ == '__main__':

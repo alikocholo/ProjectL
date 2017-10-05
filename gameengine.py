@@ -4,9 +4,7 @@
 # Group L
 
 #TODO
-#fix print statement when AI wins
 #use getch() before choosing game mode (for user friendliness)
-#if user wants another game --> remember user's name
 import random
 
 def isPositionFree(gameState, move):

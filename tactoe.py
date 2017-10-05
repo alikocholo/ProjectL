@@ -10,6 +10,7 @@ import getch
 
 from gameengine import getAIMove
 import random
+import curses
 
 def playAgain():
     """
@@ -137,7 +138,7 @@ def printGameState(gameState, movesLeft, turn, playerNames):
     print('                                                             :: Player 2: ' + str(playerNames[1]))
     print('                                                             :: Stones left: ' + str(movesLeft[1]))
     print('')
-    print('                                         Player ' + playerTurn + 's turn') #print players turn
+    print('                                         Player ' + playerTurn + '\'s turn') #print players turn
     print('')
     print(padding+'     |   |')
     print(padding+'   ' + gameState[1] + ' | ' + gameState[2] + ' | ' + gameState[3])
@@ -171,6 +172,10 @@ def getPlayerNames(gameMode):
         playerNames.insert(1, "The Robot Overlord (AI)")
     else:
         return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
+    if playerNames[0] == '':
+        playerNames[0] = 'One'
+    if playerNames[1] == '':
+        playerNames[1] = 'Two'
     return playerNames
 
 def getGameMode():
@@ -198,9 +203,11 @@ def loop():
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
-    if gameMode == '1':
+    if gameMode == '1': #If mode is AI, it is randomly chosen who starts
         firstMove = ['playerOne', 'playerTwo']
         turn = random.choice(firstMove)
+        if turn == 'playerTwo':
+            movesLeft = [['X','X','X','X'],['O','O','O','O','0']]
         difficultyOption = getAIDifficulty()
 
 
