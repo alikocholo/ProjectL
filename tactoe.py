@@ -119,7 +119,7 @@ def isGameWon(gS, pM):
             (gS[3] == pM and gS[5] == pM and gS[7] == pM) or #diagonal 1
             (gS[1] == pM and gS[5] == pM and gS[9] == pM))   #diagonal 2
 
-def printGameState(gameState, movesLeft, turn, playerNames):
+def printGameState(gameState, movesLeft, turn, playerNames, round):
     """
     Prints the game state in the terminal.
     gameState is a list representing the game state by 9 slots, one for
@@ -132,7 +132,8 @@ def printGameState(gameState, movesLeft, turn, playerNames):
     if turn == 'playerOne':
         playerTurn = playerNames[0]
     else: playerTurn = playerNames[1]
-
+    if round != 0:
+        print('  :: Round {}: {} vs {}'.format(round, playerNames[0], playerNames[1]))
     print('  :: Player 1: ' + str(playerNames[0]))
     print('  :: Stones left: ' + str(movesLeft[0]))
     print('                                                             :: Player 2: ' + str(playerNames[1]))
@@ -267,7 +268,7 @@ def loop():
         
     loop()
 
-def loopExternal(playerOneName, playerTwoName, gameMode):
+def loopExternal(playerOneName, playerTwoName, gameMode, round=0):
     # set up a clear board, player stones indicators, let playerOne start and initiate
     #the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
@@ -286,12 +287,12 @@ def loopExternal(playerOneName, playerTwoName, gameMode):
         if turn == 'playerOne':
             # Player ones turn. First print the gameState, then get a valid move from the player
             # finally change the gameState according to the player move, check and handle result.
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             move = getPlayerMove(gameState, turn)
             if move == None:
                 break
             performMove(gameState, playerOneMarker, move, movesLeft)
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerOneMarker):
                 print('Player one (' + str(playerNames[0]) + ') won!')
                 result = 'playerOne'
@@ -306,14 +307,14 @@ def loopExternal(playerOneName, playerTwoName, gameMode):
         else:
                     # Player twos turn. Do the same thing as player one. If Game mode is set to PvsAI (1),
                     #instead call the function for AI to make a move.
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             if (gameMode == '1'):
                 move = getAIMove(gameState, playerTwoMarker, difficultyOption) # Change this function call to whatever
                                                                                #game-engine we decide to integrate with.
             else:
                 move = getPlayerMove(gameState, turn)
             performMove(gameState, playerTwoMarker, move, movesLeft)
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerTwoMarker):
                 print("Player two won!")
                 result = 'playerTwo'

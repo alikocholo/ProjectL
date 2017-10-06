@@ -3,7 +3,7 @@ from unittest import mock
 from contextlib import redirect_stdout
 import tactoe
 import gameengine
-from random import Random
+import menu
 
 # Uppsala University
 # Software Engineering and Project Management autumn 2017
@@ -485,7 +485,6 @@ class testGameEngine(unittest.TestCase):
         with redirect_stdout(playerInput):
             result = tactoe.getAIDifficulty()
             self.assertEqual(result, '3')
-
 
 
 if __name__ == '__main__':
