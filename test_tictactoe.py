@@ -11,16 +11,8 @@ import menu
 # Author Linn Löfquist, Gabi Rolih
 #
 # TODO:
-# 1. Unit test for more AI moves(level: hard) 
-#    functions: getMiniMaxAiMove/getMiniMaxMove (gameengine.py)
+# 1. Test gameengine and tactoe integrated: by having someone try it out!
 #
-# 3. Unit test getAiDifficulty(in tactoe.py)
-#
-# 4. isPositionfree and isgameWon (gameengine), duplicates? already tested in tactoe.py
-#
-# 5. Test gameengine and tactoe integrated, how do dis?
-#
-# 6. Can not test level medium, since its random. Implementation decisions?
 #
 # Functions not tested printGameState, printMoves (printfunctions I see no need to test)
 # Also getRekd not tested (can not test random).
@@ -477,7 +469,6 @@ class testGameEngine(unittest.TestCase):
         difficultyoption = '3'
         self.assertEqual(gameengine.getAIMove(gamestate, playermarker, difficultyoption), 2)
 
-
     @mock.patch('getch.getch', side_effect=['u', 'å', '\t', '3'])
     def testGetAIDifficulty(self, input):
         #Test pressing different keys before the correct one
@@ -485,6 +476,23 @@ class testGameEngine(unittest.TestCase):
         with redirect_stdout(playerInput):
             result = tactoe.getAIDifficulty()
             self.assertEqual(result, '3')
+
+    @mock.patch('getch.getch', side_effect=['ø', '<', '-', '\r', '\n\r', '\n', '1'])
+    def testGetAIDifficultyEasy(self, input):
+        #Test pressing different keys before the correct one
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getAIDifficulty()
+            self.assertEqual(result, '1')
+
+    @mock.patch('getch.getch', side_effect=['ø', '<', '-', '\r', "\n", '\n', '2'])
+    def testGetAIDifficultyMedium(self, input):
+        #Test pressing different keys before the correct one
+        playerInput = io.StringIO()
+        with redirect_stdout(playerInput):
+            result = tactoe.getAIDifficulty()
+            self.assertEqual(result, '2')
+
 
 
 if __name__ == '__main__':
