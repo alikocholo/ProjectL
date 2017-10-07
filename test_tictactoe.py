@@ -31,8 +31,8 @@ class testGameWon(unittest.TestCase):
     
     def testEmptyGame(self):
         gameStateEmpty = [' ']*10
-        self.assertEqual(tactoe.isGameWon(gameStateEmpty, 'X'), False)
-        self.assertEqual(tactoe.isGameWon(gameStateEmpty, 'Y'), False)
+        self.assertEqual(gameengine.isGameWon(gameStateEmpty, 'X'), False)
+        self.assertEqual(gameengine.isGameWon(gameStateEmpty, 'Y'), False)
 
     #Diagonally possible wins
     #[X,2,3] [1,2,X]
@@ -40,11 +40,11 @@ class testGameWon(unittest.TestCase):
     #[7,8,X] [X,8,9]
     def testDiagonally(self):
         gameStateXwinD = [' ','X',' ',' ',' ','X',' ',' ',' ','X']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'X'), True)
-        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'Y'), False)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinD, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinD, 'Y'), False)
         gameStateXwinD = [' ',' ',' ','X',' ','X',' ','X',' ',' ']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'X'), True)
-        self.assertEqual(tactoe.isGameWon(gameStateXwinD, 'Y'), False)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinD, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinD, 'Y'), False)
 
     #Horizontal possible wins
     #[X,X,X] [1,2,3] [1,2,3] 
@@ -52,11 +52,11 @@ class testGameWon(unittest.TestCase):
     #[7,8,9] [7,8,9] [X,X,X] 
     def testHorizontal(self):
         gameStateXwinH = [' ','X','X','X',' ',' ',' ',' ',' ',' ']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinH, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinH, 'X'), True)
         gameStateXwinH = [' ', ' ',' ',' ','X','X','X',' ',' ',' ']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinH, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinH, 'X'), True)
         gameStateXwinH = ['', ' ',' ',' ',' ',' ',' ','X','X','X']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinH, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinH, 'X'), True)
 
     #Vertically possible wins
     #[X,2,3] [1,X,3] [1,2,X]
@@ -64,11 +64,11 @@ class testGameWon(unittest.TestCase):
     #[X,8,9] [7,X,9] [7,8,X]
     def testVertically(self):
         gameStateXwinV = [' ','X',' ',' ','X',' ',' ','X',' ',' ']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinV, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinV, 'X'), True)
         gameStateXwinV = [' ',' ','X',' ',' ','X',' ',' ','X',' ']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinV, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinV, 'X'), True)
         gameStateXwinV = [' ',' ',' ','X',' ',' ','X',' ',' ','X']
-        self.assertEqual(tactoe.isGameWon(gameStateXwinV, 'X'), True)
+        self.assertEqual(gameengine.isGameWon(gameStateXwinV, 'X'), True)
     
     #Nobody wins
     #[X,Y,X]
@@ -76,8 +76,8 @@ class testGameWon(unittest.TestCase):
     #[Y,X,Y]
     def testDraw(self):
         gameStateDrawn = [' ', 'X', 'Y', 'X', 'Y', 'X', 'X', 'Y', 'X', 'Y']
-        self.assertEqual(tactoe.isGameWon(gameStateDrawn, 'Y'), False)
-        self.assertEqual(tactoe.isGameWon(gameStateDrawn, 'X'), False)
+        self.assertEqual(gameengine.isGameWon(gameStateDrawn, 'Y'), False)
+        self.assertEqual(gameengine.isGameWon(gameStateDrawn, 'X'), False)
 
 #tests userinput functions
 class testUserInputs(unittest.TestCase):
@@ -189,23 +189,23 @@ class testGameActions(unittest.TestCase):
 
     def testIsPositionFree(self):
         gameState = [' ',' ',' ',' ','X','X','O',' ',' ',' ']
-        pos1 = tactoe.isPositionFree(gameState,1)
-        pos2 = tactoe.isPositionFree(gameState,2)
-        pos3 = tactoe.isPositionFree(gameState,3)
+        pos1 = gameengine.isPositionFree(gameState,1)
+        pos2 = gameengine.isPositionFree(gameState,2)
+        pos3 = gameengine.isPositionFree(gameState,3)
         self.assertTrue(pos1)
         self.assertTrue(pos2)
         self.assertTrue(pos3)
         
-        pos4 = tactoe.isPositionFree(gameState,4)
-        pos5 = tactoe.isPositionFree(gameState,5)
-        pos6 = tactoe.isPositionFree(gameState,6)
+        pos4 = gameengine.isPositionFree(gameState,4)
+        pos5 = gameengine.isPositionFree(gameState,5)
+        pos6 = gameengine.isPositionFree(gameState,6)
         self.assertFalse(pos4)
         self.assertFalse(pos5)
         self.assertFalse(pos6)
 
-        pos7 = tactoe.isPositionFree(gameState,7)
-        pos8 = tactoe.isPositionFree(gameState,8)
-        pos9 = tactoe.isPositionFree(gameState,9)
+        pos7 = gameengine.isPositionFree(gameState,7)
+        pos8 = gameengine.isPositionFree(gameState,8)
+        pos9 = gameengine.isPositionFree(gameState,9)
         self.assertTrue(pos7)
         self.assertTrue(pos8)
         self.assertTrue(pos9)

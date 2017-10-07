@@ -8,7 +8,7 @@ import getch
 # 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
-from gameengine import getAIMove
+from gameengine import getAIMove, isGameWon, isPositionFree
 import random
 import curses
 
@@ -99,25 +99,6 @@ def getPlayerMove(gameState, turn):
                 print('Illegal or invalid move. Try again!')
         except:
             print('Illegal or invalid move. Try again!')
-
-def isPositionFree(gameState, move):
-    """
-    Check if the move 'move' is valied within the gamestate 'gameState'
-    """
-    return gameState[move] == ' '
-
-def isGameWon(gS, pM):
-    """
-    Check if the gamestate (gS) contains three of the given marker (pM) in a row.
-    """
-    return ((gS[1] == pM and gS[2] == pM and gS[3] == pM) or #top
-            (gS[4] == pM and gS[5] == pM and gS[6] == pM) or #middle
-            (gS[7] == pM and gS[8] == pM and gS[9] == pM) or #bottom
-            (gS[1] == pM and gS[4] == pM and gS[7] == pM) or #down left
-            (gS[2] == pM and gS[5] == pM and gS[8] == pM) or #down middle
-            (gS[3] == pM and gS[6] == pM and gS[9] == pM) or #down right
-            (gS[3] == pM and gS[5] == pM and gS[7] == pM) or #diagonal 1
-            (gS[1] == pM and gS[5] == pM and gS[9] == pM))   #diagonal 2
 
 def printGameState(gameState, movesLeft, turn, playerNames, round):
     """
