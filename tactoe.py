@@ -263,7 +263,7 @@ def loopExternal(playerOneName, playerTwoName, gameMode, round=0):
         difficultyOption = getAIDifficulty()
 
     gameIsPlaying = True
-    result = 'none'
+    result = None
     while gameIsPlaying:
         if turn == 'playerOne':
             # Player ones turn. First print the gameState, then get a valid move from the player
@@ -307,5 +307,4 @@ def loopExternal(playerOneName, playerTwoName, gameMode, round=0):
                     break
                 else:
                     turn = 'playerOne'
-                
     return result

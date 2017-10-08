@@ -109,6 +109,8 @@ def tournamentRound(playerNames):
     if len(playerNames) <= 1:
         return playerNames
     else:
+        if type(playerNames) != list:
+            return winners
         shuffle(playerNames)
         numberOfRounds = len(playerNames)/2
         for i in range(int(numberOfRounds)):
@@ -136,7 +138,7 @@ def tournamentRound(playerNames):
                     winners.append(playerTwo)
                 else:
                     return 'ERROR'
-    print('Players moving on in the tournament: {}'.format(winners))
+    print('Players moving on in the tournament: {}'.format(", ".join(str(winner[0]) for winner in winners)))
     return winners
 
 def menuOptionTournament():
@@ -167,6 +169,8 @@ def menuOptionTournament():
         round = tournamentRound(playerNames)
         while len(round) > 1:
             round = tournamentRound(round)
+        if round == []:
+            return False, None
         result = round[0][0]
         print('The winner was: ' + result)
         return False,round[0][0]
@@ -183,7 +187,10 @@ def menuOption():
             menuOption()
     elif option == validOptions[1]:
         again,result = menuOptionTournament()
-        print('The winner of the tournament (mainmenuprint): ' + result)
+        if result != None:
+            print('The winner of the tournament (mainmenuprint): ' + result)
+        else:
+            print('Exiting to the main menu...')
         menuOption()
     elif option == validOptions[2]:
         #call function for quit
