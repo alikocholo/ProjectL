@@ -238,3 +238,6 @@ def menuOption():
     else:
         print('this else-case in menuOptions() shouldnt be reached')
         return
+
+def main():
+    menuOption()
