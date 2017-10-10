@@ -8,8 +8,9 @@ import getch
 # 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
-from gameengine import getAIMove
+from gameengine import getAIMove, isGameWon, isPositionFree
 import random
+import curses
 
 def playAgain():
     """
@@ -99,26 +100,7 @@ def getPlayerMove(gameState, turn):
         except:
             print('Illegal or invalid move. Try again!')
 
-def isPositionFree(gameState, move):
-    """
-    Check if the move 'move' is valied within the gamestate 'gameState'
-    """
-    return gameState[move] == ' '
-
-def isGameWon(gS, pM):
-    """
-    Check if the gamestate (gS) contains three of the given marker (pM) in a row.
-    """
-    return ((gS[1] == pM and gS[2] == pM and gS[3] == pM) or #top
-            (gS[4] == pM and gS[5] == pM and gS[6] == pM) or #middle
-            (gS[7] == pM and gS[8] == pM and gS[9] == pM) or #bottom
-            (gS[1] == pM and gS[4] == pM and gS[7] == pM) or #down left
-            (gS[2] == pM and gS[5] == pM and gS[8] == pM) or #down middle
-            (gS[3] == pM and gS[6] == pM and gS[9] == pM) or #down right
-            (gS[3] == pM and gS[5] == pM and gS[7] == pM) or #diagonal 1
-            (gS[1] == pM and gS[5] == pM and gS[9] == pM))   #diagonal 2
-
-def printGameState(gameState, movesLeft, turn, playerNames):
+def printGameState(gameState, movesLeft, turn, playerNames, round):
     """
     Prints the game state in the terminal.
     gameState is a list representing the game state by 9 slots, one for
@@ -131,13 +113,14 @@ def printGameState(gameState, movesLeft, turn, playerNames):
     if turn == 'playerOne':
         playerTurn = playerNames[0]
     else: playerTurn = playerNames[1]
-
+    if round != 0:
+        print('  :: Round {}: {} vs {}'.format(round, playerNames[0], playerNames[1]))
     print('  :: Player 1: ' + str(playerNames[0]))
     print('  :: Stones left: ' + str(movesLeft[0]))
     print('                                                             :: Player 2: ' + str(playerNames[1]))
     print('                                                             :: Stones left: ' + str(movesLeft[1]))
     print('')
-    print('                                         Player ' + playerTurn + 's turn') #print players turn
+    print('                                         Player ' + playerTurn + '\'s turn') #print players turn
     print('')
     print(padding+'     |   |')
     print(padding+'   ' + gameState[1] + ' | ' + gameState[2] + ' | ' + gameState[3])
@@ -171,6 +154,10 @@ def getPlayerNames(gameMode):
         playerNames.insert(1, "The Robot Overlord (AI)")
     else:
         return "ERROR! YA BLEW IT!" #todo: implement some reasonable error handling here
+    if playerNames[0] == '':
+        playerNames[0] = 'One'
+    if playerNames[1] == '':
+        playerNames[1] = 'Two'
     return playerNames
 
 def getGameMode():
@@ -198,9 +185,11 @@ def loop():
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
-    if gameMode == '1':
+    if gameMode == '1': #If mode is AI, it is randomly chosen who starts
         firstMove = ['playerOne', 'playerTwo']
         turn = random.choice(firstMove)
+        if turn == 'playerTwo':
+            movesLeft = [['X','X','X','X'],['O','O','O','O','0']]
         difficultyOption = getAIDifficulty()
 
 
@@ -260,7 +249,7 @@ def loop():
         
     loop()
 
-def loopExternal(playerOneName, playerTwoName, gameMode):
+def loopExternal(playerOneName, playerTwoName, gameMode, round=0):
     # set up a clear board, player stones indicators, let playerOne start and initiate
     #the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
@@ -274,17 +263,17 @@ def loopExternal(playerOneName, playerTwoName, gameMode):
         difficultyOption = getAIDifficulty()
 
     gameIsPlaying = True
-    result = 'none'
+    result = None
     while gameIsPlaying:
         if turn == 'playerOne':
             # Player ones turn. First print the gameState, then get a valid move from the player
             # finally change the gameState according to the player move, check and handle result.
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             move = getPlayerMove(gameState, turn)
             if move == None:
                 break
             performMove(gameState, playerOneMarker, move, movesLeft)
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerOneMarker):
                 print('Player one (' + str(playerNames[0]) + ') won!')
                 result = 'playerOne'
@@ -299,14 +288,14 @@ def loopExternal(playerOneName, playerTwoName, gameMode):
         else:
                     # Player twos turn. Do the same thing as player one. If Game mode is set to PvsAI (1),
                     #instead call the function for AI to make a move.
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             if (gameMode == '1'):
                 move = getAIMove(gameState, playerTwoMarker, difficultyOption) # Change this function call to whatever
                                                                                #game-engine we decide to integrate with.
             else:
                 move = getPlayerMove(gameState, turn)
             performMove(gameState, playerTwoMarker, move, movesLeft)
-            printGameState(gameState, movesLeft, turn, playerNames)
+            printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerTwoMarker):
                 print("Player two won!")
                 result = 'playerTwo'
@@ -318,5 +307,4 @@ def loopExternal(playerOneName, playerTwoName, gameMode):
                     break
                 else:
                     turn = 'playerOne'
-                
     return result

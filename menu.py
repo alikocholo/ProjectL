@@ -7,11 +7,11 @@ from tactoe import loopExternal
 import random
 from random import shuffle
 
-def startGameFunction(playerOneName, playerTwoName, gameMode):
+def startGameFunction(playerOneName, playerTwoName, gameMode, round=0):
     """
     Set the called function to whichever function your game platform uses
     """
-    return loopExternal(playerOneName, playerTwoName, gameMode)
+    return loopExternal(playerOneName, playerTwoName, gameMode, round)
 
 
 def startGame(playerOneName, playerTwoName):
@@ -61,7 +61,6 @@ def getMenuOption(validOptions):
     option = input("Please select an option: ").upper()
     while (option not in validOptions): 
             option = input("Please select a valid option: ")
-    
     return option
 
 def getGameMode():
@@ -117,7 +116,7 @@ def getPlayerNames(noPlayers):
     """
     playerNames = []
     for i in range(int(noPlayers)):
-        nameInput = input("Please enter the name of player " + str(i) + ": ")
+        nameInput = input("Please enter the name of player " + str(i+1) + ": ")
         for playerNameElement in playerNames:
             if nameInput in playerNameElement:
                 nameInput = input('Please enter a unique name: ')
@@ -134,6 +133,8 @@ def tournamentRound(playerNames):
     if len(playerNames) <= 1:
         return playerNames
     else:
+        if type(playerNames) != list:
+            return winners
         shuffle(playerNames)
         numberOfRounds = len(playerNames)/2
         for i in range(int(numberOfRounds)):
@@ -143,11 +144,11 @@ def tournamentRound(playerNames):
                 gameMode = 1
             else:
                 gameMode = 0
-            result = startGameFunction(playerOne[0], playerTwo[0], gameMode)
+            result = startGameFunction(playerOne[0], playerTwo[0], gameMode, i+1)
             if result == 'draw':
                 gameCounter = 1
                 while gameCounter < 3 and result == 'draw':
-                    result = startGameFunction(playerOne[0], playerTwo[0], gameMode)
+                    result = startGameFunction(playerOne[0], playerTwo[0], gameMode, i+1)
                     gameCounter += 1
             if result == 'draw':
                 if bool(random.getrandbits(1)):
@@ -161,6 +162,7 @@ def tournamentRound(playerNames):
                     winners.append(playerTwo)
                 else:
                     return 'ERROR'
+    print('Players moving on in the tournament: {}'.format(", ".join(str(winner[0]) for winner in winners)))
     return winners
 
 def menuOptionTournament():
@@ -198,6 +200,8 @@ def menuOptionTournament():
         round = tournamentRound(playerNames)
         while len(round) > 1:
             round = tournamentRound(round)
+        if round == []:
+            return False, None
         result = round[0][0]
         print('The winner was: ' + result)
         return False,round[0][0]
@@ -209,7 +213,7 @@ def menuOption():
     or tournament depending on which option is selected.
     """
     printMenu()
-    validOptions = ['P', 'T', 'ESC']
+    validOptions = ['P', 'T', '\x1b']
     option = getMenuOption(validOptions)
     if option == validOptions[0]:
         again,result = menuOptionOneGame()
@@ -219,7 +223,10 @@ def menuOption():
             menuOption()
     elif option == validOptions[1]:
         again,result = menuOptionTournament()
-        print('The winner of the tournament (mainmenuprint): ' + result)
+        if result != None:
+            print('The winner of the tournament (mainmenuprint): ' + result)
+        else:
+            print('Exiting to the main menu...')
         menuOption()
     elif option == validOptions[2]:
         #call function for quit
