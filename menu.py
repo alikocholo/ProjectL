@@ -190,7 +190,10 @@ def menuOptionTournament():
         playerOneName = input("Please enter the name of player one: ")
         playerTwoName = input("Please enter the name of player two: ")
         result = startGameFunction(playerOneName, playerTwoName, '0')
-        print("The winner of the tournament was: " + result)
+        if result != null:
+            print("The winner of the tournament was: " + result)
+        else:
+            print("There is no winner, the tournament was aborted")
         return menuOptionAgain(),result
     else:
         playerNames = getPlayerNames(noPlayers)
