@@ -195,15 +195,24 @@ def menuOptionTournament():
         noPlayers = input("Please provide a valid no players: ")
     
     if noPlayers == '1':
+        playerOne = []
+        playerTwo = []
         playerOneName = input("Please enter the name of player one: ")
-        result = startGameFunction(playerOneName, 'The robot tournament overlord', '1')
+        playerOne.append([playerOneName,'human'])
+        AIDifficulty = getAIDifficulty()
+        playerTwo.append(['The robot tournament overlord', AIDifficulty])
+        result = startGameFunction(playerOne[0], playerTwo[0], '1', 0)
         print("The winner of the tournament was: " + result)
         return menuOptionAgain(),result
 
     elif noPlayers == '2':
+        playerOne = []
+        playerTwo = []
         playerOneName = input("Please enter the name of player one: ")
+        playerOne.append([playerOneName, 'human'])
         playerTwoName = input("Please enter the name of player two: ")
-        result = startGameFunction(playerOneName, playerTwoName, '0')
+        playerTwo.append([playerTwoName, 'human'])
+        result = startGameFunction(playerOne[0], playerTwo[0], '0', 0)
         if result != None:
             print("The winner of the tournament was: " + result)
         else:
