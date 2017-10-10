@@ -3,6 +3,7 @@
 # Author: Henrik Thorsell
 # Group L
 
+import getch
 from tactoe import loopExternal
 import random
 from random import shuffle
@@ -60,9 +61,11 @@ def getMenuOption(validOptions):
     Gets an option from the player. If it isn't a correct option, prompt for new input
     util it is correct. Return the option.
     """
-    option = input("Please select an option: ").upper()
+    print("Please select an option: ")
+    option = getch.getch().upper()
     while (option not in validOptions): 
-            option = input("Please select a valid option: ")
+            print("Please select a valid option: ")
+            option = getch.getch().upper()
     return option
 
 def getGameMode():
@@ -70,9 +73,12 @@ def getGameMode():
     Gets a game mode option from the player, either 0 for vs another player or 1 for vs AI.
     """
     validOptions = ['0','1','2','q']
-    option = input("Do you want to play vs player or AI? '0' for player, '1' for AI, '2' for AI vs AI")
+    print("Do you want to play vs player or AI?")
+    print("'0' for vs player, '1' for vs AI, '2' for AI vs AI")
+    option = getch.getch().lower()
     while(option not in validOptions):
-        option = input("Please enter a valid input, '0', '1', '2' or 'q': ")
+        print("Please enter a valid input, '0', '1', '2' or 'q': ")
+        option = getch.getch().lower()
     return option
 
 def menuOptionAgain():
@@ -80,9 +86,11 @@ def menuOptionAgain():
     Asks the player to play again, repeatedly asking until either 'y' or 'n' is provided.
     """
     validOptions = ['y','n']
-    again = input("Would you like to play again? Y/N ").lower()
+    print("Would you like to play again? Y/N ")
+    again = getch.getch().lower()
     while again not in validOptions:
-        again = input("Please provide valid input. Y/N ").lower()
+        print("Please provide valid input. Y/N ")
+        again = getch.getch().lower()
         if again == validOptions[0]:
             return True
         else:
@@ -95,6 +103,8 @@ def menuOptionOneGame():
     game together with a boolean that represents if the player wishes another game or not.
     """
     gameMode = getGameMode() #Ask if the player wants PvP or PvAI.
+    if gameMode == 'q':
+        return None
     playerOne = []
     playerTwo = []
 
@@ -102,11 +112,20 @@ def menuOptionOneGame():
     if gameMode == '2':
         firstAIDifficulty = getAIDifficulty()
         secondAIDifficulty = getAIDifficulty()
-        playerOne.append(['Robot overlord 1', firstAIDifficulty])
-        playerTwo.append(['Robot overlord 2', secondAIDifficulty])
+        playerOne.append('Robot overlord 1')
+        playerOne.append(firstAIDifficulty)
+        playerTwo.append('Robot overlord 2')
+        playerTwo.append(secondAIDifficulty)
         #make AIs play each other
         result = playAIvsAI(playerOne, playerTwo)
-        print("The winner was: " + result[0][0])
+        if result == 'playerOne':
+            result = playerOne
+        elif result == 'playerTwo':
+            result = playerTwo
+        else:
+            result = None
+        print(result)
+        print("The winner was: " + result[0])
         return menuOptionAgain(), result
     if gameMode == '1':
         playerOne.append(input("Please enter the name of player one: "))
@@ -176,7 +195,11 @@ def tournamentRound(playerNames):
                 gameMode = '0'
             print("Calling startgameFunction in tournamentRound in menu with: " + gameMode)
             result = startGameFunction(playerOne, playerTwo, gameMode, i+1)
-            print("The result was: " + result)
+            if result is not None:
+                print("The result was: " + result)
+            else: 
+                print("The tournament was aborted!")
+                return None
             if result == 'draw':
                 gameCounter = 1
                 while gameCounter < 3 and result == 'draw':
@@ -211,9 +234,10 @@ def menuOptionTournament():
     validnoPlayers = ['1','2','3','4','5','6','7','8']
     print('Select how many players you are: ')
     print('(The game supports 1-8 players)')
-    noPlayers = input()
+    noPlayers = getch.getch()
     while noPlayers not in validnoPlayers:
-        noPlayers = input("Please provide a valid no players: ")
+        print("Please provide a valid no players: ")
+        noPlayers = getch.getch()
     
     if noPlayers == '1':
         playerOne = []
@@ -223,6 +247,9 @@ def menuOptionTournament():
         AIDifficulty = getAIDifficulty()
         playerTwo.append(['The robot tournament overlord', AIDifficulty])
         result = startGameFunction(playerOne[0], playerTwo[0], '1', 0)
+        if result is None:
+            print("Tournament was aborted, no winner!")
+            return menuOptionAgain(),None
         print("The winner of the tournament was: " + result)
         return menuOptionAgain(),result
 
@@ -238,6 +265,7 @@ def menuOptionTournament():
             print("The winner of the tournament was: " + result)
         else:
             print("There is no winner, the tournament was aborted")
+            return None,None
         return menuOptionAgain(),result
     else:
         playerNames = getPlayerNames(noPlayers)
@@ -253,6 +281,8 @@ def menuOptionTournament():
             playerNames.append(['Robot overlord bronze', bronzeDifficulty])
         shuffle(playerNames)
         round = tournamentRound(playerNames)
+        if round is None:
+            return None,None
         while len(round) > 1:
             round = tournamentRound(round)
         if round == []:
@@ -278,10 +308,15 @@ def menuOption():
             menuOption()
     elif option == validOptions[1]:
         again,result = menuOptionTournament()
-        if result != None:
-            print('The winner of the tournament (mainmenuprint): ' + result)
+
+        if again is None:
+            print("Tournament was aborted!")
+            menuOption()
+        if result is None:
+            print("Tournament was aborted!")
+            menuOption()
         else:
-            print('Exiting to the main menu...')
+            print("The winner of the tournament (mainMenuPrint) is: " + result)
         menuOption()
     elif option == validOptions[2]:
         #call function for quit
