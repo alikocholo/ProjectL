@@ -65,6 +65,9 @@ def getMenuOption(validOptions):
     return option
 
 def getGameMode():
+    """
+    Gets a game mode option from the player, either 0 for vs another player or 1 for vs AI.
+    """
     validOptions = ['0','1','q']
     option = input("Do you want to play vs player or AI? '0' for player, '1' for AI.")
     while(option not in validOptions):
@@ -72,6 +75,9 @@ def getGameMode():
     return option
 
 def menuOptionAgain():
+    """
+    Asks the player to play again, repeatedly asking until either 'y' or 'n' is provided.
+    """
     validOptions = ['y','n']
     again = input("Would you like to play again? Y/N ").lower()
     while again not in validOptions:
@@ -82,20 +88,33 @@ def menuOptionAgain():
             return False
 
 def menuOptionOneGame():
-    gameMode = getGameMode()
+    """
+    This function handles the logic if a player in the menu chooses to play one game.
+    After the game is finished the player is asked to play again, and the result of the first
+    game together with a boolean that represents if the player wishes another game or not.
+    """
+    gameMode = getGameMode() #Ask if the player wants PvP or PvAI.
     playerOneName = input("Please enter the name of player one: ")
-    playerTwoName = 'temp'
+    playerTwoName = 'temp' #This is only used if the player chose PvP.
     print('game mode is: ' + gameMode)
     if gameMode == '1':
-        playerTwoName = 'The robot overlord'
-        result = startGameFunction(playerOneName, playerTwoName, gameMode)
-        return menuOptionAgain(),result
+        playerTwoName = 'The robot overlord' #If PvAI this is the name of the AI player.
+        result = startGameFunction(playerOneName, playerTwoName, gameMode) #Play a round.
+        return menuOptionAgain(),result #Return the bool if the player wants to play again &
+        #result
     else:
-        playerTwoName = input("Please enter the name of player two: ")
-        result = startGameFunction(playerOneName, playerTwoName, gameMode)
+        playerTwoName = input("Please enter the name of player two: ") #If PvP, get the second
+        #player name
+        result = startGameFunction(playerOneName, playerTwoName, gameMode) #Play the game,
+        #return the result and the answer to the question of the player wants to play again.
         return menuOptionAgain(),result
 
 def getPlayerNames(noPlayers):
+    """
+    Prompts the names of 'noPlayers' amount of players (for the tournament mode). Returns a list
+    of tuples where the first element is the player name and the second is a string indicating
+    it is the name for a human player.
+    """
     playerNames = []
     for i in range(int(noPlayers)):
         nameInput = input("Please enter the name of player " + str(i) + ": ")
@@ -106,6 +125,11 @@ def getPlayerNames(noPlayers):
     return playerNames
 
 def tournamentRound(playerNames):
+    """
+    Returns a list with one tuple representing the winner of the tournament. The tuples first
+    element is the name of the winning player and the second is the string 'human' or 'ai'
+    indicating if the player was a human or AI player.
+    """
     winners = []
     if len(playerNames) <= 1:
         return playerNames
@@ -140,6 +164,13 @@ def tournamentRound(playerNames):
     return winners
 
 def menuOptionTournament():
+    """
+    This function implements the tournament logic. First by from the players getting the amount
+    of human participants in the tournamet, then getting their names. If the amount of players
+    are just one or two, the regular single game function is called, otherwise the tournament-
+    round-function is called repeatedly until everyone but one player has been eliminated.
+    The remaining player is then the victor.
+    """
     validnoPlayers = ['1','2','3','4','5','6','7','8']
     print('Select how many players you are: ')
     print('(The game supports 1-8 players)')
@@ -172,6 +203,11 @@ def menuOptionTournament():
         return False,round[0][0]
     
 def menuOption():
+    """
+    Menu option function calls the printMenu function to print the user interface to the
+    terminal, then it handles the players game mode choice and starts either the single game
+    or tournament depending on which option is selected.
+    """
     printMenu()
     validOptions = ['P', 'T', 'ESC']
     option = getMenuOption(validOptions)
@@ -192,9 +228,3 @@ def menuOption():
     else:
         print('this else-case in menuOptions() shouldnt be reached')
         return
-
-def main():
-    menuOption()
-    return
-
-main()
