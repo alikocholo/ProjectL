@@ -8,7 +8,7 @@ import getch
 # 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
 #    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
 
-from gameengine import getAIMove, isGameWon, isPositionFree
+from gameengine import getAIMove, isGameWon, isPositionFree, playAIvsAI
 import random
 import curses
 
@@ -168,18 +168,18 @@ def getPlayerNames(gameMode):
 
 def getGameMode():
     """
-    Prompts the user to choose game mode. 0 is PvP and 1 is PvAI. 
+    Prompts the user to choose game mode. 0 is PvP, 1 is PvAI, 2 is AIvsAI. 
     """
-    gameModes = ['0','1']
-    print('Please choose player vs player or player vs AI: ')
-    print('Input 0 for PvP and 1 for PvAI')
+    gameModes = ['0','1','2']
+    print('Please choose player vs player, player vs AI or AI vs AI: ')
+    print('Input 0 for PvP, 1 for PvAI and 2 for AIvsAI')
     gameMode = input()
     while True:
         if (gameMode in gameModes):
             return gameMode
         else:
             print('Please select a valid game mode!')
-            print('Enter 0 for PVP or 1 for PvAI')
+            print('Enter 0 for PVP, 1 for PvAI and 2 for AIvsAI')
             gameMode = input()
 
 def loop():
@@ -191,6 +191,11 @@ def loop():
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
     gameMode = getGameMode() # Gets game mode from the user, 0 is PvP and 1 is PvAI.
+    if gameMode == '3':
+        print("Please select first and second ai difficulties")
+        firstAIdifficulty = getAIDifficulty()
+        secondAIdifficulty = getAIDifficulty()
+        return playAIvsAI(['AI one', firstAIdifficulty], ['AI two', secondAIdifficulty])
     if gameMode == '1': #If mode is AI, it is randomly chosen who starts
         firstMove = ['playerOne', 'playerTwo']
         turn = random.choice(firstMove)
@@ -258,6 +263,7 @@ def loop():
     loop()
 
 def loopExternal(playerOne, playerTwo, gameMode, round=0):
+
     # set up a clear board, player stones indicators, let playerOne start and initiate
     #the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board

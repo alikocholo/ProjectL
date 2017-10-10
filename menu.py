@@ -7,6 +7,7 @@ from tactoe import loopExternal
 import random
 from random import shuffle
 from tactoe import getAIDifficulty
+from gameengine import playAIvsAI
 
 def startGameFunction(playerOneName, playerTwoName, gameMode, round=0):
     """
@@ -68,10 +69,10 @@ def getGameMode():
     """
     Gets a game mode option from the player, either 0 for vs another player or 1 for vs AI.
     """
-    validOptions = ['0','1','q']
-    option = input("Do you want to play vs player or AI? '0' for player, '1' for AI.")
+    validOptions = ['0','1','2','q']
+    option = input("Do you want to play vs player or AI? '0' for player, '1' for AI, '2' for AI vs AI")
     while(option not in validOptions):
-        option = input("Please enter a valid input, '0', '1' or 'q': ")
+        option = input("Please enter a valid input, '0', '1', '2' or 'q': ")
     return option
 
 def menuOptionAgain():
@@ -96,16 +97,28 @@ def menuOptionOneGame():
     gameMode = getGameMode() #Ask if the player wants PvP or PvAI.
     playerOne = []
     playerTwo = []
-    playerOne.append(input("Please enter the name of player one: "))
-    playerOne.append('human')
+
     print('game mode is: ' + gameMode)
+    if gameMode == '2':
+        firstAIDifficulty = getAIDifficulty()
+        secondAIDifficulty = getAIDifficulty()
+        playerOne.append(['Robot overlord 1', firstAIDifficulty])
+        playerTwo.append(['Robot overlord 2', secondAIDifficulty])
+        #make AIs play each other
+        result = playAIvsAI(playerOne, playerTwo)
+        print("The winner was: " + result[0][0])
+        return menuOptionAgain(), result
     if gameMode == '1':
+        playerOne.append(input("Please enter the name of player one: "))
+        playerOne.append('human')
         playerTwo.append('The robot overlord') #If PvAI this is the name of the AI player.
         playerTwo.append(getAIDifficulty()) #standard difficulty
         result = startGameFunction(playerOne, playerTwo, gameMode) #Play a round.
         return menuOptionAgain(),result #Return the bool if the player wants to play again &
         #result
     else:
+        playerOne.append(input("Please enter the name of player one: "))
+        playerOne.append('human')
         playerTwo.append(input("Please enter the name of player two: ")) #If PvP, get the second
         #player name
         playerTwo.append('human')
@@ -149,9 +162,15 @@ def tournamentRound(playerNames):
             playerTwo = playerNames.pop()
             aiDifficulties = ['easy', 'normal', 'hard']
             print("Deciding game mode in tournamentRound function")
-            if playerOne[1] in aiDifficulties or playerTwo[1] in aiDifficulties:
+            # AI vs AI
+            if playerOne[1] in aiDifficulties and playerTwo[1] in aiDifficulties:
+                print("Setting gameMode = 3 (ai vs ai) in menu function")
+                gameMode = '3'
+            # One player vs AI
+            elif playerOne[1] in aiDifficulties or playerTwo[1] in aiDifficulties:                
                 print("Setting gameMode = 1 (ai) in menu function")
                 gameMode = '1'
+            # Player vs Player
             else:
                 print("Setting gameMode = 0 (pvp) in menu function")
                 gameMode = '0'
