@@ -6,6 +6,7 @@
 from tactoe import loopExternal
 import random
 from random import shuffle
+from tactoe import getAIDifficulty
 
 def startGameFunction(playerOneName, playerTwoName, gameMode, round=0):
     """
@@ -93,18 +94,22 @@ def menuOptionOneGame():
     game together with a boolean that represents if the player wishes another game or not.
     """
     gameMode = getGameMode() #Ask if the player wants PvP or PvAI.
-    playerOneName = input("Please enter the name of player one: ")
-    playerTwoName = 'temp' #This is only used if the player chose PvP.
+    playerOne = []
+    playerTwo = []
+    playerOne.append(input("Please enter the name of player one: "))
+    playerOne.append('human')
     print('game mode is: ' + gameMode)
     if gameMode == '1':
-        playerTwoName = 'The robot overlord' #If PvAI this is the name of the AI player.
-        result = startGameFunction(playerOneName, playerTwoName, gameMode) #Play a round.
+        playerTwo.append('The robot overlord') #If PvAI this is the name of the AI player.
+        playerTwo.append(getAIDifficulty()) #standard difficulty
+        result = startGameFunction(playerOne, playerTwo, gameMode) #Play a round.
         return menuOptionAgain(),result #Return the bool if the player wants to play again &
         #result
     else:
-        playerTwoName = input("Please enter the name of player two: ") #If PvP, get the second
+        playerTwo.append(input("Please enter the name of player two: ")) #If PvP, get the second
         #player name
-        result = startGameFunction(playerOneName, playerTwoName, gameMode) #Play the game,
+        playerTwo.append('human')
+        result = startGameFunction(playerOne, playerTwo, gameMode) #Play the game,
         #return the result and the answer to the question of the player wants to play again.
         return menuOptionAgain(),result
 
@@ -130,30 +135,39 @@ def tournamentRound(playerNames):
     indicating if the player was a human or AI player.
     """
     winners = []
+    # If there is only one player left, that is the winner.
     if len(playerNames) <= 1:
         return playerNames
+    # If there are several players, play elminination matches.
     else:
         if type(playerNames) != list:
             return winners
-        shuffle(playerNames)
+        shuffle(playerNames) #Randomize the order so poping two players randomly seeds the match
         numberOfRounds = len(playerNames)/2
         for i in range(int(numberOfRounds)):
             playerOne = playerNames.pop()
             playerTwo = playerNames.pop()
-            if playerOne[1] == 'ai' or playerTwo[1] == 'ai':
-                gameMode = 1
+            aiDifficulties = ['easy', 'normal', 'hard']
+            print("Deciding game mode in tournamentRound function")
+            if playerOne[1] in aiDifficulties or playerTwo[1] in aiDifficulties:
+                print("Setting gameMode = 1 (ai) in menu function")
+                gameMode = '1'
             else:
-                gameMode = 0
-            result = startGameFunction(playerOne[0], playerTwo[0], gameMode, i+1)
+                print("Setting gameMode = 0 (pvp) in menu function")
+                gameMode = '0'
+            result = startGameFunction(playerOne, playerTwo, gameMode, i+1)
             if result == 'draw':
                 gameCounter = 1
                 while gameCounter < 3 and result == 'draw':
-                    result = startGameFunction(playerOne[0], playerTwo[0], gameMode, i+1)
+                    result = startGameFunction(playerOne, playerTwo, gameMode, i+1)
                     gameCounter += 1
             if result == 'draw':
+                print("Flipping a coin to decide the winner after three games!")
                 if bool(random.getrandbits(1)):
+                    print("The winner was: " + playerOne[0])
                     winners.append(playerOne)
                 else:
+                    print("The winner was: " + playerTwo[0])
                     winners.append(playerTwo)
             else:
                 if result == 'playerOne':
@@ -190,7 +204,7 @@ def menuOptionTournament():
         playerOneName = input("Please enter the name of player one: ")
         playerTwoName = input("Please enter the name of player two: ")
         result = startGameFunction(playerOneName, playerTwoName, '0')
-        if result != null:
+        if result != None:
             print("The winner of the tournament was: " + result)
         else:
             print("There is no winner, the tournament was aborted")
@@ -198,7 +212,10 @@ def menuOptionTournament():
     else:
         playerNames = getPlayerNames(noPlayers)
         if (len(playerNames) % 2 != 0):
-            playerNames.append(['Robot overlord deluxe','ai'])
+            playerNames.append(['Robot overlord gold','hard'])
+        if (len(playerNames) % 4 != 0):
+            playerNames.append(['Robot overlord silver', 'medium'])
+            playerNames.append(['Robot overlord bronze', 'easy'])
         shuffle(playerNames)
         round = tournamentRound(playerNames)
         while len(round) > 1:

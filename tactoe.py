@@ -47,7 +47,10 @@ def performMove(gameState, playerMarker, move, movesLeft):
         movesLeft[0].pop() #pop first element, such as removing one marker from the moves left
     else:
         movesLeft[1].pop() #remove first element, such as to remove one marker from the moves left
-    gameState[move] = playerMarker
+    if move is not None:
+        gameState[move] = playerMarker
+    else:
+        return "ERROR! Move was None in performMove function call in tactoe.py"
     
 def printMoves(moves): 
     for i in range(0, 3):
@@ -60,16 +63,19 @@ def getAIDifficulty():
     prompt the player for a new option.
     """
 
-    options = ['1','2','3']
+    optionsShort = ['e','m','h']
+    options = ['easy', 'medium', 'hard']
 
     while True:
           print('Select AI difficulty: ')
           print('Easy provides no adviersity, hard is undefeatable.')
           print('Medium randomly choses between easy and hard.')
-          print('1 - easy, 2 - medium, 3 - hard.')  
+          print('e - easy, m - medium, h - hard.')  
           selection = getch.getch()
-          if (selection in options):
-              return selection
+          if (selection in optionsShort):
+              # Return the corresponding element in options using optionsShort
+              # (so entering 'e' returns 'easy', etc.)
+              return options[optionsShort.index(selection)]
           else:
               print ('Invalid selection, please try again!')
         
@@ -190,7 +196,9 @@ def loop():
         turn = random.choice(firstMove)
         if turn == 'playerTwo':
             movesLeft = [['X','X','X','X'],['O','O','O','O','0']]
+        print("Getting AI difficulty")
         difficultyOption = getAIDifficulty()
+        print("Ai difficulty was: " + difficultyOption)
 
 
     #if (gameMode == '1'): # prompt the user for new game if AI is selected, as AI not yet implemented
@@ -249,29 +257,33 @@ def loop():
         
     loop()
 
-def loopExternal(playerOneName, playerTwoName, gameMode, round=0):
+def loopExternal(playerOne, playerTwo, gameMode, round=0):
     # set up a clear board, player stones indicators, let playerOne start and initiate
     #the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board
     # indices represents the position of the board (index 1 = top let, index 2 = top mid etc.
-    playerNames = [playerOneName, playerTwoName]
+    playerNames = [playerOne[0], playerTwo[0]]
     playerOneMarker = 'X'
     playerTwoMarker = 'O'
     movesLeft = [['X','X','X','X','X'],['O','O','O','O']]
     turn = 'playerOne'
     if gameMode == '1':
-        difficultyOption = getAIDifficulty()
+        difficultyOption = 'easy'
 
     gameIsPlaying = True
     result = None
     while gameIsPlaying:
         if turn == 'playerOne':
             # Player ones turn. First print the gameState, then get a valid move from the player
-            # finally change the gameState according to the player move, check and handle result.
+            # finally change the gameState according to the player move, check and handle result
             printGameState(gameState, movesLeft, turn, playerNames, round)
-            move = getPlayerMove(gameState, turn)
+            if playerOne[1] == 'human': # If the player is human, get their move.
+                move = getPlayerMove(gameState, turn)
+            else: # if the player is ai, call the Ai function with playerOne[1] = difficulty
+                move = getAIMove(gameState, playerOneMarker, playerOne[1])
             if move == None:
                 break
+            
             performMove(gameState, playerOneMarker, move, movesLeft)
             printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerOneMarker):
@@ -289,11 +301,10 @@ def loopExternal(playerOneName, playerTwoName, gameMode, round=0):
                     # Player twos turn. Do the same thing as player one. If Game mode is set to PvsAI (1),
                     #instead call the function for AI to make a move.
             printGameState(gameState, movesLeft, turn, playerNames, round)
-            if (gameMode == '1'):
-                move = getAIMove(gameState, playerTwoMarker, difficultyOption) # Change this function call to whatever
-                                                                               #game-engine we decide to integrate with.
-            else:
+            if (playerTwo[1] == 'human'):
                 move = getPlayerMove(gameState, turn)
+            else:
+                move = getAIMove(gameState, playerTwoMarker, playerTwo[1])
             performMove(gameState, playerTwoMarker, move, movesLeft)
             printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerTwoMarker):

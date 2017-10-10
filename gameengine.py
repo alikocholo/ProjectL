@@ -99,15 +99,15 @@ def getRekd():
     return bool(random.getrandbits(1))
 
 def getAIMove(gameState, playerMarker, difficultyOption):
-    if difficultyOption == '1':
+    if difficultyOption == 'easy':
         return getNextAvailableMove(gameState, playerMarker)
-    if difficultyOption == '2':
+    if difficultyOption == 'medium':
         rekd = getRekd() # flip a coin to decide difficulty
         if rekd:
-            return getAIMove(gameState, playerMarker, '3')
+            return getAIMove(gameState, playerMarker, 'hard')
         else:
-            return getAIMove(gameState, playerMarker, '1')
-    if difficultyOption == '3':
+            return getAIMove(gameState, playerMarker, 'easy')
+    if difficultyOption == 'hard':
         return getMinimaxAIMove(gameState, playerMarker)
     else:
         return None
