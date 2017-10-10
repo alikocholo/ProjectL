@@ -263,7 +263,8 @@ def loop():
     loop()
 
 def loopExternal(playerOne, playerTwo, gameMode, round=0):
-
+    if gameMode == '3':
+        return playAIvsAI(playerOne, playerTwo)
     # set up a clear board, player stones indicators, let playerOne start and initiate
     #the game
     gameState = [' '] * 10 # Set up the game state represented as a list. '  ' is an empty square on the board

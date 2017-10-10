@@ -9,11 +9,11 @@ from random import shuffle
 from tactoe import getAIDifficulty
 from gameengine import playAIvsAI
 
-def startGameFunction(playerOneName, playerTwoName, gameMode, round=0):
+def startGameFunction(playerOne, playerTwo, gameMode, round=0):
     """
     Set the called function to whichever function your game platform uses
     """
-    return loopExternal(playerOneName, playerTwoName, gameMode, round)
+    return loopExternal(playerOne, playerTwo, gameMode, round)
 
 
 def startGame(playerOneName, playerTwoName):
@@ -174,7 +174,9 @@ def tournamentRound(playerNames):
             else:
                 print("Setting gameMode = 0 (pvp) in menu function")
                 gameMode = '0'
+            print("Calling startgameFunction in tournamentRound in menu with: " + gameMode)
             result = startGameFunction(playerOne, playerTwo, gameMode, i+1)
+            print("The result was: " + result)
             if result == 'draw':
                 gameCounter = 1
                 while gameCounter < 3 and result == 'draw':
@@ -240,10 +242,15 @@ def menuOptionTournament():
     else:
         playerNames = getPlayerNames(noPlayers)
         if (len(playerNames) % 2 != 0):
-            playerNames.append(['Robot overlord gold','hard'])
+            print("Please select AI difficulty for 'Robot overlord gold': ")
+            goldDifficulty = getAIDifficulty()
+            playerNames.append(['Robot overlord gold',goldDifficulty])
         if (len(playerNames) % 4 != 0):
-            playerNames.append(['Robot overlord silver', 'medium'])
-            playerNames.append(['Robot overlord bronze', 'easy'])
+            print("Please select difficulty for robot overlord silver and bronze: ")
+            silverDifficulty = getAIDifficulty()
+            bronzeDifficulty = getAIDifficulty()
+            playerNames.append(['Robot overlord silver', silverDifficulty])
+            playerNames.append(['Robot overlord bronze', bronzeDifficulty])
         shuffle(playerNames)
         round = tournamentRound(playerNames)
         while len(round) > 1:
