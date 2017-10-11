@@ -198,10 +198,10 @@ def tournamentRound(playerNames):
             if result == 'draw':
                 print("Flipping a coin to decide the winner after three games!")
                 if bool(random.getrandbits(1)):
-                    print("The winner was: " + playerOne[0])
+                    print("the winner is: " + playerOne[0])
                     winners.append(playerOne)
                 else:
-                    print("The winner was: " + playerTwo[0])
+                    print("the winner is: " + playerTwo[0])
                     winners.append(playerTwo)
             else:
                 if result == playerOne:
