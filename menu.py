@@ -188,7 +188,6 @@ def tournamentRound(playerNames):
                 gameMode = '0'
             result = startGameFunction(playerOne, playerTwo, gameMode, i+1)
             if result is None:
-                print("The tournament was aborted!")
                 return None
             if result == 'draw':
                 gameCounter = 1
@@ -279,9 +278,9 @@ def menuOptionTournament():
         playerNamesBackup = copy.deepcopy(playerNames)
         while play:
             shuffle(playerNames)
-            print(playerNames)
             round = tournamentRound(playerNames)
-            print(round)
+            if round is None:
+                return False, None
             while len(round) > 1:
                 round = tournamentRound(round)
             result = round
@@ -308,17 +307,10 @@ def menuOption():
             menuOption()
     elif option == validOptions[1]:
         again,result = menuOptionTournament()
-
-        if again is None:
-            print("Tournament was aborted1!")
-            menuOption()
-        if result is None:
-            print("Tournament was aborted2!")
-            menuOption()
         menuOption()
     elif option == validOptions[2]:
         #call function for quit
-        print('quit')
+        print('Quitting!')
         return
     else:
         print('this else-case in menuOptions() shouldnt be reached')
