@@ -4,6 +4,7 @@
 # Group L
 
 import getch
+import copy
 from tactoe import loopExternal
 import random
 from random import shuffle
@@ -70,18 +71,18 @@ def getMenuOption(validOptions):
 
 def getGameMode():
     """
-    Gets a game mode option from the player, either 0 for vs another player or 1 for vs AI.
+    Gets a game mode option from the player, either 0 for vs another player, 1 for vs computer or 2 for computer vs computer.
     """
     validOptions = ['0','1','2','q']
-    print("Do you want to play vs player or AI?")
-    print("'0' for vs player, '1' for vs AI, '2' for AI vs AI")
+    print("Do you want to play vs player or the computer?")
+    print("'0' for vs player, '1' for vs computer, '2' for computer vs computer")
     option = getch.getch().lower()
     while(option not in validOptions):
         print("Please enter a valid input, '0', '1', '2' or 'q': ")
         option = getch.getch().lower()
     return option
 
-def menuOptionAgain():
+def menuOptionPlayAgain():
     """
     Asks the player to play again, repeatedly asking until either 'y' or 'n' is provided.
     """
@@ -89,12 +90,13 @@ def menuOptionAgain():
     print("Would you like to play again? Y/N ")
     again = getch.getch().lower()
     while again not in validOptions:
-        print("Please provide valid input. Y/N ")
+        print("Please provide a valid input. Y/N ")
         again = getch.getch().lower()
-        if again == validOptions[0]:
-            return True
-        else:
-            return False
+    if again == validOptions[0]:
+        return True
+    else:
+        return False
+    
 
 def menuOptionOneGame():
     """
@@ -107,9 +109,7 @@ def menuOptionOneGame():
         return None
     playerOne = []
     playerTwo = []
-
-    print('game mode is: ' + gameMode)
-    if gameMode == '2':
+    if gameMode == '2': # AI vs AI option
         firstAIDifficulty = getAIDifficulty()
         secondAIDifficulty = getAIDifficulty()
         playerOne.append('Robot overlord 1')
@@ -117,33 +117,32 @@ def menuOptionOneGame():
         playerTwo.append('Robot overlord 2')
         playerTwo.append(secondAIDifficulty)
         #make AIs play each other
-        result = playAIvsAI(playerOne, playerTwo)
-        if result == 'playerOne':
-            result = playerOne
-        elif result == 'playerTwo':
-            result = playerTwo
-        else:
-            result = None
-        print(result)
-        print("The winner was: " + result[0])
-        return menuOptionAgain(), result
+        play = True
+        while play:
+            result = playAIvsAI(playerOne, playerTwo)
+            play = menuOptionPlayAgain()
+        return False, result
     if gameMode == '1':
         playerOne.append(input("Please enter the name of player one: "))
         playerOne.append('human')
         playerTwo.append('The robot overlord') #If PvAI this is the name of the AI player.
-        playerTwo.append(getAIDifficulty()) #standard difficulty
-        result = startGameFunction(playerOne, playerTwo, gameMode) #Play a round.
-        return menuOptionAgain(),result #Return the bool if the player wants to play again &
-        #result
+        playerTwo.append(getAIDifficulty())
+        play = True
+        while play:
+            result = startGameFunction(playerOne, playerTwo, gameMode)
+            play = menuOptionPlayAgain()
+        return play, result
     else:
         playerOne.append(input("Please enter the name of player one: "))
         playerOne.append('human')
         playerTwo.append(input("Please enter the name of player two: ")) #If PvP, get the second
         #player name
         playerTwo.append('human')
-        result = startGameFunction(playerOne, playerTwo, gameMode) #Play the game,
-        #return the result and the answer to the question of the player wants to play again.
-        return menuOptionAgain(),result
+        play = True
+        while play:
+            result = startGameFunction(playerOne, playerTwo, gameMode)
+            play = menuOptionPlayAgain()
+        return play, result
 
 def getPlayerNames(noPlayers):
     """
@@ -172,32 +171,23 @@ def tournamentRound(playerNames):
         return playerNames
     # If there are several players, play elminination matches.
     else:
-        if type(playerNames) != list:
-            return winners
         shuffle(playerNames) #Randomize the order so poping two players randomly seeds the match
         numberOfRounds = len(playerNames)/2
         for i in range(int(numberOfRounds)):
             playerOne = playerNames.pop()
             playerTwo = playerNames.pop()
             aiDifficulties = ['easy', 'normal', 'hard']
-            print("Deciding game mode in tournamentRound function")
             # AI vs AI
             if playerOne[1] in aiDifficulties and playerTwo[1] in aiDifficulties:
-                print("Setting gameMode = 3 (ai vs ai) in menu function")
                 gameMode = '3'
             # One player vs AI
             elif playerOne[1] in aiDifficulties or playerTwo[1] in aiDifficulties:                
-                print("Setting gameMode = 1 (ai) in menu function")
                 gameMode = '1'
             # Player vs Player
             else:
-                print("Setting gameMode = 0 (pvp) in menu function")
                 gameMode = '0'
-            print("Calling startgameFunction in tournamentRound in menu with: " + gameMode)
             result = startGameFunction(playerOne, playerTwo, gameMode, i+1)
-            if result is not None:
-                print("The result was: " + result)
-            else: 
+            if result is None:
                 print("The tournament was aborted!")
                 return None
             if result == 'draw':
@@ -214,13 +204,14 @@ def tournamentRound(playerNames):
                     print("The winner was: " + playerTwo[0])
                     winners.append(playerTwo)
             else:
-                if result == 'playerOne':
+                if result == playerOne:
                     winners.append(playerOne)
-                elif result == 'playerTwo':
+                elif result == playerTwo:
                     winners.append(playerTwo)
                 else:
                     return 'ERROR'
-    print('Players moving on in the tournament: {}'.format(", ".join(str(winner[0]) for winner in winners)))
+    if len(winners) > 1:
+        print('Players moving on in the tournament: {}'.format(", ".join(str(winner[0]) for winner in winners)))
     return winners
 
 def menuOptionTournament():
@@ -246,12 +237,15 @@ def menuOptionTournament():
         playerOne.append([playerOneName,'human'])
         AIDifficulty = getAIDifficulty()
         playerTwo.append(['The robot tournament overlord', AIDifficulty])
-        result = startGameFunction(playerOne[0], playerTwo[0], '1', 0)
-        if result is None:
-            print("Tournament was aborted, no winner!")
-            return menuOptionAgain(),None
-        print("The winner of the tournament was: " + result)
-        return menuOptionAgain(),result
+        play = True
+        while play:
+            result = startGameFunction(playerOne[0], playerTwo[0], '1', 0)
+            if result is None:
+                print("Tournament was aborted, no winner!")
+            else:
+                print("The winner of the tournament is: " + result[0])
+            play = menuOptionPlayAgain()
+        return play, result
 
     elif noPlayers == '2':
         playerOne = []
@@ -260,13 +254,15 @@ def menuOptionTournament():
         playerOne.append([playerOneName, 'human'])
         playerTwoName = input("Please enter the name of player two: ")
         playerTwo.append([playerTwoName, 'human'])
-        result = startGameFunction(playerOne[0], playerTwo[0], '0', 0)
-        if result != None:
-            print("The winner of the tournament was: " + result)
-        else:
-            print("There is no winner, the tournament was aborted")
-            return None,None
-        return menuOptionAgain(),result
+        play = True
+        while play:
+            result = startGameFunction(playerOne[0], playerTwo[0], '0', 0)
+            if result is not None:
+                print("The winner of the tournament was: " + result[0])
+            else:
+                print("There is no winner, the tournament was aborted")
+            play = menuOptionPlayAgain()
+        return play,result
     else:
         playerNames = getPlayerNames(noPlayers)
         if (len(playerNames) % 2 != 0):
@@ -279,18 +275,22 @@ def menuOptionTournament():
             bronzeDifficulty = getAIDifficulty()
             playerNames.append(['Robot overlord silver', silverDifficulty])
             playerNames.append(['Robot overlord bronze', bronzeDifficulty])
-        shuffle(playerNames)
-        round = tournamentRound(playerNames)
-        if round is None:
-            return None,None
-        while len(round) > 1:
-            round = tournamentRound(round)
-        if round == []:
-            return False, None
-        result = round[0][0]
-        print('The winner was: ' + result)
-        return False,round[0][0]
-    
+        play = True
+        playerNamesBackup = copy.deepcopy(playerNames)
+        while play:
+            shuffle(playerNames)
+            print(playerNames)
+            round = tournamentRound(playerNames)
+            print(round)
+            while len(round) > 1:
+                round = tournamentRound(round)
+            result = round
+            print("The winner of the tournament was: " + result[0][0])
+            play = menuOptionPlayAgain()
+            if play:
+                playerNames = copy.deepcopy(playerNamesBackup)
+        return False,result
+                            
 def menuOption():
     """
     Menu option function calls the printMenu function to print the user interface to the
@@ -310,13 +310,11 @@ def menuOption():
         again,result = menuOptionTournament()
 
         if again is None:
-            print("Tournament was aborted!")
+            print("Tournament was aborted1!")
             menuOption()
         if result is None:
-            print("Tournament was aborted!")
+            print("Tournament was aborted2!")
             menuOption()
-        else:
-            print("The winner of the tournament (mainMenuPrint) is: " + result)
         menuOption()
     elif option == validOptions[2]:
         #call function for quit

@@ -114,15 +114,15 @@ def getAIMove(gameState, playerMarker, difficultyOption):
 
 def playAIvsAI(playerOne, playerTwo):
     if playerOne[1] ==  playerTwo[1]:
-        return random.choice(['playerOne', 'playerTwo'])
+        return random.choice([playerOne, playerTwo])
     elif playerOne[1] == 'hard':
-        return 'playerOne'
+        return playerOne
     elif playerTwo[1] == 'hard':
-        return 'playerTwo'
+        return playerTwo
     elif playerOne[1] == 'medium':
-        return 'playerOne'
+        return playerOne
     elif playerTwo[1] == 'medium':
-        return 'playerTwo'
+        return playerTwo
     else:
         print("Undefined behavoir in playAivsAI")
         return "Undefined behaviour in playAIvsAI"

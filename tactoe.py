@@ -67,9 +67,7 @@ def getAIDifficulty():
     options = ['easy', 'medium', 'hard']
 
     while True:
-          print('Select AI difficulty: ')
-          print('Easy provides no adviersity, hard is undefeatable.')
-          print('Medium randomly choses between easy and hard.')
+          print('Select computer difficulty: ')
           print('e - easy, m - medium, h - hard.')  
           selection = getch.getch()
           if (selection in optionsShort):
@@ -295,7 +293,7 @@ def loopExternal(playerOne, playerTwo, gameMode, round=0):
             printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerOneMarker):
                 print('Player one (' + str(playerNames[0]) + ') won!')
-                result = 'playerOne'
+                result = playerOne
                 gameIsPlaying = False
             else:
                 if isGameStateFull(gameState):
@@ -316,7 +314,7 @@ def loopExternal(playerOne, playerTwo, gameMode, round=0):
             printGameState(gameState, movesLeft, turn, playerNames, round)
             if isGameWon(gameState, playerTwoMarker):
                 print("Player two won!")
-                result = 'playerTwo'
+                result = playerTwo
                 gameIsPlaying = False
             else:
                 if isGameStateFull(gameState):
