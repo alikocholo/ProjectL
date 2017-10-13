@@ -448,7 +448,7 @@ class testGameEngine(unittest.TestCase):
         #[X,O,X]    [X,O,X]
         gamestate = [' ',' ',' ','X',' ','O',' ','X','O','X']
         playermarker = 'O'
-        difficultyoption = '1'
+        difficultyoption = 'easy'
         self.assertEqual(gameengine.getAIMove(gamestate, playermarker, difficultyoption), 1)
 
         #Test move when game state is in medium mode
@@ -457,7 +457,7 @@ class testGameEngine(unittest.TestCase):
         #[X,O,X]    [X,O,X]
         gamestate = [' ',' ',' ','X',' ','O',' ','X','O','X']
         playermarker = 'O'
-        difficultyoption = '3'
+        difficultyoption = 'hard'
         self.assertTrue(gameengine.getAIMove(gamestate, playermarker, difficultyoption) in [1,2])
 
         #Test move when game state is in hard mode
@@ -466,32 +466,32 @@ class testGameEngine(unittest.TestCase):
         #[X,O,X]    [X,O,X] | [X,O,X]
         gamestate = [' ',' ',' ','X',' ','O',' ','X','O','X']
         playermarker = 'O'
-        difficultyoption = '3'
+        difficultyoption = 'hard'
         self.assertEqual(gameengine.getAIMove(gamestate, playermarker, difficultyoption), 2)
 
-    @mock.patch('getch.getch', side_effect=['u', 'å', '\t', '3'])
+    @mock.patch('getch.getch', side_effect=['u', 'å', '\t', 'h'])
     def testGetAIDifficulty(self, input):
         #Test pressing different keys before the correct one
         playerInput = io.StringIO()
         with redirect_stdout(playerInput):
             result = tactoe.getAIDifficulty()
-            self.assertEqual(result, '3')
+            self.assertEqual(result, 'hard')
 
-    @mock.patch('getch.getch', side_effect=['ø', '<', '-', '\r', '\n\r', '\n', '1'])
+    @mock.patch('getch.getch', side_effect=['ø', '<', '-', '\r', '\n\r', '\n', 'e'])
     def testGetAIDifficultyEasy(self, input):
         #Test pressing different keys before the correct one
         playerInput = io.StringIO()
         with redirect_stdout(playerInput):
             result = tactoe.getAIDifficulty()
-            self.assertEqual(result, '1')
+            self.assertEqual(result, 'easy')
 
-    @mock.patch('getch.getch', side_effect=['ø', '<', '-', '\r', "\n", '\n', '2'])
+    @mock.patch('getch.getch', side_effect=['ø', '<', '-', '\r', "\n", '\n', 'm'])
     def testGetAIDifficultyMedium(self, input):
         #Test pressing different keys before the correct one
         playerInput = io.StringIO()
         with redirect_stdout(playerInput):
             result = tactoe.getAIDifficulty()
-            self.assertEqual(result, '2')
+            self.assertEqual(result, 'medium')
 
 
 
