@@ -4,13 +4,9 @@ import getch
 # Group L
 # Author: Casper Strömberg, Henrik Thorsell
 
-# TODO:
-# 4. Kiko mentioned on todays meeting (19/9/2017) that displaying some help-text when pushin 'h' could be implemented. Now the text
-#    is always displayed. The solution isn't as pretty, but maybe it'll work. Should be discussed at least?
-
-from gameengine import getAIMove, isGameWon, isPositionFree, playAIvsAI
 import random
 import curses
+from gameengine import getAIMove, isGameWon, isPositionFree, playAIvsAI
 
 def playAgain():
     """

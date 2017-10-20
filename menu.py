@@ -5,10 +5,8 @@
 
 import getch
 import copy
-from tactoe import loopExternal
 import random
-from random import shuffle
-from tactoe import getAIDifficulty
+from tactoe import loopExternal, getAIDifficulty
 from gameengine import playAIvsAI
 
 def startGameFunction(playerOne, playerTwo, gameMode, round=0):

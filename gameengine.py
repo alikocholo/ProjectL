@@ -3,8 +3,6 @@
 # Author: Henrik Thorsell
 # Group L
 
-#TODO
-#use getch() before choosing game mode (for user friendliness)
 import random
 
 def isPositionFree(gameState, move):
@@ -14,6 +12,9 @@ def isPositionFree(gameState, move):
     return gameState[move] == ' '
 
 def getEmptySquares(gameState):
+    """
+    Returns the indexes of the empty squares in the represented gamestate of gameState argument.
+    """
     emptySquares = []
     for i in range (1,10):
         if isPositionFree(gameState, i):
@@ -34,11 +35,20 @@ def isGameWon(gS, pM):
             (gS[1] == pM and gS[5] == pM and gS[9] == pM))   #diagonal 2
 
 def getNextAvailableMove(gameState, playerMarker):
+    """
+    Returns the index of the first empty square in the represented gamestate of the gameState argument.
+    """
     for i in range(1,10):
         if isPositionFree(gameState, i):
             return i
 
 def getMinimaxMove(gameState, playerMarker):
+    """
+    Call with the board game as gameState and playerMarker as either O or X, representing the
+    player about to make a turn.
+    Returns the best move to make according to the implemented version of the minimax algorithm.
+    Also returns the value of the move according to the implemented algorithm.
+    """
     # Remember, this is how the game state looks:
     # [1 2 3
     #  3 4 5
@@ -91,14 +101,26 @@ def getMinimaxMove(gameState, playerMarker):
         return "Incorrect player marker!"
 
 def getMinimaxAIMove(gameState, playerMarker):
+    """
+    A wrapper function that only removes the best move according to the called function,
+    instead of returning both the move and the value of the move.
+    """
     a,b = getMinimaxMove(gameState,playerMarker)
     return b
 
 def getRekd():
+    """
+    Randomly returns True or False
+    """
     # randomly returns True or False
     return bool(random.getrandbits(1))
 
 def getAIMove(gameState, playerMarker, difficultyOption):
+    """
+    Calls the appropriate AI-move-calculating-function depending on difficultyOption
+    with the playerMarker as the player making the move in the game gameState.
+    Returns the index of the square for the playerMaker to play.
+    """
     if difficultyOption == 'easy':
         return getNextAvailableMove(gameState, playerMarker)
     if difficultyOption == 'medium':
@@ -113,6 +135,12 @@ def getAIMove(gameState, playerMarker, difficultyOption):
         return None
 
 def playAIvsAI(playerOne, playerTwo):
+    """
+    Checks the AI-players difficulties and returns the winner. Hard always beats medium and easy,
+    medium always beats easy and when two AIs of equal difficulty meet the winner is random.
+    This function eliminates the need of pitting the AI against each other, wasting the players
+    time and resources. May or may not be used according to the specifications.
+    """
     if playerOne[1] ==  playerTwo[1]:
         return random.choice([playerOne, playerTwo])
     elif playerOne[1] == 'hard':
