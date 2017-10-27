@@ -169,7 +169,7 @@ def tournamentRound(playerNames):
         return playerNames
     # If there are several players, play elminination matches.
     else:
-        shuffle(playerNames) #Randomize the order so poping two players randomly seeds the match
+        random.shuffle(playerNames) #Randomize the order so poping two players randomly seeds the match
         numberOfRounds = len(playerNames)/2
         for i in range(int(numberOfRounds)):
             playerOne = playerNames.pop()
@@ -275,7 +275,7 @@ def menuOptionTournament():
         play = True
         playerNamesBackup = copy.deepcopy(playerNames)
         while play:
-            shuffle(playerNames)
+            random.shuffle(playerNames)
             round = tournamentRound(playerNames)
             if round is None:
                 return False, None
